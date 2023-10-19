@@ -1,13 +1,13 @@
-package com.bpr.allergendetector.ui.dashboard
+package com.bpr.allergendetector.ui.scan
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class DashboardViewModel : ViewModel() {
+class ScanViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
+        value = "Scan Fragment"
     }
     val text: LiveData<String> = _text
 }

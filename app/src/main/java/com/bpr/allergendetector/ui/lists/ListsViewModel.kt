@@ -1,13 +1,13 @@
-package com.bpr.allergendetector.ui.notifications
+package com.bpr.allergendetector.ui.lists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class NotificationsViewModel : ViewModel() {
+class ListsViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is notifications Fragment"
+        value = "Lists Fragment"
     }
     val text: LiveData<String> = _text
 }
