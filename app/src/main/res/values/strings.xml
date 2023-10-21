@@ -6,4 +6,6 @@
     <string name="title_photo">Photo</string>
     <string name="retake_button">Retake</string>
     <string name="use_button">Use</string>
+    <string name="title_result">Result</string>
+    <string name="scan_again">New Scan</string>
 </resources>
