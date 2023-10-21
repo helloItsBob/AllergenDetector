@@ -15,11 +15,28 @@
         android:id="@+id/navigation_scan"
         android:name="com.bpr.allergendetector.ui.scan.ScanFragment"
         android:label="@string/title_scan"
-        tools:layout="@layout/fragment_scan" />
+        tools:layout="@layout/fragment_scan" >
+        <action
+            android:id="@+id/action_navigation_scan_to_navigation_photo"
+            app:destination="@id/navigation_photo" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.bpr.allergendetector.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/navigation_photo"
+        android:name="com.bpr.allergendetector.ui.scan.PhotoFragment"
+        android:label="@string/title_photo"
+        tools:layout="@layout/fragment_photo" >
+        <action
+            android:id="@+id/action_navigation_photo_to_navigation_scan"
+            app:destination="@id/navigation_scan" />
+        <argument
+            android:name="image"
+            app:argType="string" />
+    </fragment>
 </navigation>
