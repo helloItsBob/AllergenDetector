@@ -3,4 +3,12 @@
     <string name="title_lists">Lists</string>
     <string name="title_scan">Scan</string>
     <string name="title_profile">Profile</string>
+    <string name="profile_name_default_placeholder">Default Profile Name Placeholder</string>
+    <string name="profile_button_allergens">Allergens</string>
+    <string name="profile_button_settings">Settings</string>
+    <string name="profile_button_statistics">Statistics</string>
+    <string name="profile_button_metrics">Metrics</string>
+    <string name="profile_button_educational_tips">Educational Tips</string>
+    <string name="placeholder">Placeholder</string>
+    <string name="profile_avatar">Profile Avatar</string>
 </resources>
