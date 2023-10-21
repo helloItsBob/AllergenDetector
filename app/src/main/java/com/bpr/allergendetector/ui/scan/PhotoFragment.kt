@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bpr.allergendetector.databinding.FragmentPhotoBinding
@@ -48,9 +47,7 @@ class PhotoFragment : Fragment() {
         }
 
         binding.retakeButton.setOnClickListener {
-            val action: NavDirections =
-                PhotoFragmentDirections.actionNavigationPhotoToNavigationScan()
-            findNavController(root).navigate(action)
+            findNavController(root).popBackStack()
         }
 
         return root
