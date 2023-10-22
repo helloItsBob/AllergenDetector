@@ -6,22 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".ui.scan.ResultFragment" >
 
-    <TextView
-        android:id="@+id/textViewResult"
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="30sp"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonScanAgain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textViewResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+    </ScrollView>
 
     <Button
         android:id="@+id/buttonScanAgain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="80dp"
         android:elevation="2dp"
         android:text="@string/scan_again"
         app:layout_constraintBottom_toBottomOf="parent"
