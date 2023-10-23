@@ -8,4 +8,5 @@
     <string name="use_button">Use</string>
     <string name="title_result">Result</string>
     <string name="scan_again">New Scan</string>
+    <string name="crop_button">Crop</string>
 </resources>

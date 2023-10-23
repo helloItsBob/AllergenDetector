@@ -67,4 +67,7 @@ dependencies {
 
     // ML Kit dependencies
     implementation("com.google.mlkit:text-recognition:16.0.0")
+
+    // Image cropper dependencies
+    implementation("com.vanniktech:android-image-cropper:4.5.0")
 }

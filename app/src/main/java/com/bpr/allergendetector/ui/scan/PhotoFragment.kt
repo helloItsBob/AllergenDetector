@@ -16,8 +16,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bpr.allergendetector.MainActivity
 import com.bpr.allergendetector.databinding.FragmentPhotoBinding
-import com.bumptech.glide.Glide
-
 
 class PhotoFragment : Fragment() {
 
@@ -46,11 +44,20 @@ class PhotoFragment : Fragment() {
         actionBar?.setDisplayHomeAsUpEnabled(false)
 
         // Load and display the image in an ImageView.
-        val imagePath = args.image
+        var imagePath = args.image
         val capturedImage = binding.capturedImage
-        Glide.with(requireContext())
-            .load(imagePath)
-            .into(capturedImage)
+
+        // Image cropper
+        capturedImage.setImageUriAsync(Uri.parse(imagePath))
+
+        binding.cropButton.setOnClickListener {
+            val cropped = capturedImage.getCroppedImage()
+            if (cropped != null) {
+                photoViewModel.deleteImage(requireContext(), Uri.parse(imagePath))
+                imagePath = photoViewModel.saveImageToGallery(requireContext(), cropped).toString()
+                capturedImage.setImageUriAsync(Uri.parse(imagePath))
+            }
+        }
 
         binding.useButton.setOnClickListener {
             // TODO("Implement the logic to use the photo - crop it and send to ML model.")
