@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.scan.PhotoFragment" >
 
-    <ImageView
+    <com.canhub.cropper.CropImageView
         android:id="@+id/capturedImage"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:contentDescription="TODO"
-        app:layout_constraintBottom_toTopOf="@+id/retake_button"
+        app:layout_constraintBottom_toTopOf="@id/cropButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,7 +24,7 @@
         android:layout_marginBottom="80dp"
         android:text="@string/retake_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/use_button"
+        app:layout_constraintEnd_toStartOf="@+id/cropButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -37,6 +37,18 @@
         android:text="@string/use_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/cropButton" />
+
+    <Button
+        android:id="@+id/cropButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:elevation="2dp"
+        android:layout_marginBottom="80dp"
+        android:text="@string/crop_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/use_button"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/retake_button" />
 

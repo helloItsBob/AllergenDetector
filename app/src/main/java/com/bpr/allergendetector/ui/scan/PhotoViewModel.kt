@@ -1,15 +1,24 @@
 package com.bpr.allergendetector.ui.scan
 
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.io.IOException
+import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Locale
 import java.util.concurrent.CompletableFuture
+
 
 class PhotoViewModel : ViewModel() {
 
@@ -49,5 +58,64 @@ class PhotoViewModel : ViewModel() {
                 }
         }
         return future
+    }
+
+    fun deleteImage(context: Context, imageUri: Uri) {
+        val contentResolver: ContentResolver = context.contentResolver
+
+        try {
+            val result = contentResolver.delete(imageUri, null, null)
+
+            if (result > 0) {
+                // Image deleted successfully
+                Log.d("ImageDeletion", "Image deleted: $imageUri")
+            } else {
+                // Failed to delete the image
+                Log.d("ImageDeletion", "Failed to delete image: $imageUri")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("ImageDeletion", "Error while deleting image: $e")
+        }
+    }
+
+    fun saveImageToGallery(context: Context, bitmap: Bitmap): Uri? {
+        val contentResolver: ContentResolver = context.contentResolver
+        val format = "yyyy-MM-dd-HH-mm-ss-SSS"
+
+        val contentValues = ContentValues().apply {
+            put(
+                MediaStore.Images.Media.DISPLAY_NAME, SimpleDateFormat(format, Locale.US)
+                    .format(System.currentTimeMillis())
+            )
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Allergen Detector")
+        }
+
+        var imageUri: Uri? = null
+        var outputStream: OutputStream? = null
+
+        try {
+            imageUri =
+                contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            if (imageUri != null) {
+                outputStream = contentResolver.openOutputStream(imageUri)
+                if (outputStream != null) {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                }
+                outputStream?.close()
+
+                Log.d("ImageSaving", "Image saved: $imageUri")
+            } else {
+                Log.e("ImageSaving", "Failed to save image")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("ImageSaving", "Error while saving image: $e")
+        } finally {
+            outputStream?.close()
+        }
+
+        return imageUri
     }
 }
