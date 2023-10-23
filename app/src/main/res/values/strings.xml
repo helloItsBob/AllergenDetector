@@ -15,4 +15,10 @@
     <string name="remove_allergen">Remove Allergen</string>
     <string name="allergen_severity">Allergen severity</string>
     <string name="title_allergen_list">Allergen List</string>
+    <string name="title_photo">Photo</string>
+    <string name="retake_button">Retake</string>
+    <string name="use_button">Use</string>
+    <string name="title_result">Result</string>
+    <string name="scan_again">New Scan</string>
+    <string name="crop_button">Crop</string>
 </resources>
