@@ -8,8 +8,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment() {
@@ -45,10 +47,8 @@ class ProfileFragment : Fragment() {
             it.asString(context)
         }
 
-//        val navController = activity?.findNavController(R.id.nav_host_fragment_activity_main) //TODO Add navigation
-
-//        val profileButtonAdapter = ProfileButtonAdapter(buttonDataList, navController!!) //TODO Add navigation
-        val profileButtonAdapter = ProfileButtonAdapter(buttonDataList)
+        val navController = activity?.findNavController(R.id.nav_host_fragment_activity_main)
+        val profileButtonAdapter = ProfileButtonAdapter(buttonDataList, navController!!)
 
 
         val recyclerView: RecyclerView = binding.profileButtonList

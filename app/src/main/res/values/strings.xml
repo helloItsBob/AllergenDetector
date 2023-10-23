@@ -11,4 +11,8 @@
     <string name="profile_button_educational_tips">Educational Tips</string>
     <string name="placeholder">Placeholder</string>
     <string name="profile_avatar">Profile Avatar</string>
+    <string name="edit_allergen">Edit Allergen</string>
+    <string name="remove_allergen">Remove Allergen</string>
+    <string name="allergen_severity">Allergen severity</string>
+    <string name="title_allergen_list">Allergen List</string>
 </resources>

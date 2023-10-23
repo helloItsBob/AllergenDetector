@@ -5,12 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bpr.allergendetector.R
 
 class ProfileButtonAdapter(
     private val buttonData: List<String>,
- //   private val navController: NavController //TODO Add navigation
+    private val navController: NavController
 ) :
     RecyclerView.Adapter<ProfileButtonAdapter.ButtonViewHolder>() {
 
@@ -29,15 +30,16 @@ class ProfileButtonAdapter(
         holder.button.text = buttonText
         holder.button.setOnClickListener {
             when (position) {
-//                0 -> {
-//                    navController.navigate(R.id.navigation_allergen_list) //TODO: Add navigation
-//                }
+                0 -> {
+                    navController.navigate(R.id.navigation_allergen_list) //TODO: Add navigation
+                }
+
                 else -> {
-                        Toast.makeText(
-                            holder.button.context,
-                            "You clicked on $buttonText and it doesn't do anything yet.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    Toast.makeText(
+                        holder.button.context,
+                        "You clicked on $buttonText and it doesn't do anything yet.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }

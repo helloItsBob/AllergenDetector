@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/allergen_list"
+    android:name="com.bpr.allergendetector.ui.allergenlist.AllergenListFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="8dp"
+    android:fitsSystemWindows="true"
+    app:layoutManager="LinearLayoutManager"
+    tools:context=".ui.allergenlist.AllergenListFragment"
+    tools:listitem="@layout/fragment_allergen_item" />
+

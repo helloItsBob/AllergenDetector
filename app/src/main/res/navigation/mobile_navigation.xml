@@ -22,4 +22,10 @@
         android:name="com.bpr.allergendetector.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/navigation_allergen_list"
+        android:name="com.bpr.allergendetector.ui.allergenlist.AllergenListFragment"
+        android:label="@string/title_allergen_list"
+        tools:layout="@layout/fragment_allergen_list" />
 </navigation>
