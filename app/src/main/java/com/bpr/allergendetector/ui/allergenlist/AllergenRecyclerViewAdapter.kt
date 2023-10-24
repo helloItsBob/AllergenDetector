@@ -52,7 +52,7 @@ class AllergenRecyclerViewAdapter(
                 holder.severityView
             }
         }
-        //TODO implement edit for allergens
+        //TODO: implement edit for allergens
         holder.editButtonView.setOnClickListener {
             Toast.makeText(
                 holder.editButtonView.context,
@@ -60,7 +60,7 @@ class AllergenRecyclerViewAdapter(
                 Toast.LENGTH_SHORT
             ).show()
         }
-        //TODO implement remove for allergens
+        //TODO: implement remove for allergens
         holder.deleteButtonView.setOnClickListener {
             Toast.makeText(
                 holder.editButtonView.context,

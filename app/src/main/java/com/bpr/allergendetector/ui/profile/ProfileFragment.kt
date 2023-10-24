@@ -35,6 +35,7 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        //TODO: Implement profile image for user
         val imageView: ImageView = binding.profileImage
         profileViewModel.image.observe(viewLifecycleOwner) {
             imageView.setImageResource(it)
@@ -57,6 +58,7 @@ class ProfileFragment : Fragment() {
         recyclerView.adapter = profileButtonAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        //TODO: implement logout
         val logoutButton: Button = binding.logoutButton
         logoutButton.setOnClickListener {
             Toast.makeText(

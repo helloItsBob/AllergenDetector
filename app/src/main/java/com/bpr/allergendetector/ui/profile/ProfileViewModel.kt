@@ -8,6 +8,7 @@ import com.bpr.allergendetector.ui.UiText
 
 class ProfileViewModel : ViewModel() {
 
+    //TODO: Implement profile image for user
     private val _image = MutableLiveData<Int>().apply {
         value = R.drawable.baseline_profile_circle_24
     }

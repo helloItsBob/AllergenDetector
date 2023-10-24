@@ -2,8 +2,15 @@ package com.bpr.allergendetector.ui.allergenlist
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 class AllergenListViewModel : ViewModel() {
+
+    //Method to go back to previous fragment in the stack
+    fun goBack(fragment: Fragment) {
+        val navController = findNavController(fragment)
+        navController.popBackStack()
+    }
 
     private val _allergenTempList = MutableLiveData<List<Allergen>>().apply {
         value = listOf(
