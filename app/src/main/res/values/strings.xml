@@ -21,4 +21,7 @@
     <string name="title_result">Result</string>
     <string name="scan_again">New Scan</string>
     <string name="crop_button">Crop</string>
+    <string name="add_allergen">Add Allergen</string>
+    <string name="go_back">Go Back</string>
+    <string name="logout">Logout</string>
 </resources>
