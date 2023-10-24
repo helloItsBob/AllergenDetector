@@ -69,7 +69,10 @@ class PhotoFragment : Fragment() {
             resultFuture.thenApply { resultText ->
                 // switch to a fragment with a result string as an argument
                 val action =
-                    PhotoFragmentDirections.actionNavigationPhotoToNavigationResult(resultText)
+                    PhotoFragmentDirections.actionNavigationPhotoToNavigationResult(
+                        imagePath,
+                        resultText
+                    )
                 findNavController().navigate(action)
             }
         }

@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.scan.ResultFragment" >
+    tools:context=".ui.scan.DetectionResultFragment">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:contentDescription="@string/image_description"
         android:layout_margin="10dp"
+        android:contentDescription="@string/image_description"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,15 +25,26 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.35" />
 
+    <TextView
+        android:id="@+id/textResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline" />
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonProceed"
+        app:layout_constraintBottom_toTopOf="@+id/saveButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline" >
+        app:layout_constraintTop_toBottomOf="@+id/textResult">
 
         <TextView
             android:id="@+id/textViewResult"
@@ -44,27 +55,39 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/editButton"
-        android:layout_width="110dp"
+        android:id="@+id/shareButton"
+        android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginBottom="80dp"
         android:elevation="2dp"
-        android:text="@string/edit_button"
+        android:text="@string/share_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonProceed"
+        app:layout_constraintEnd_toStartOf="@+id/saveButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/buttonProceed"
-        android:layout_width="110dp"
+        android:id="@+id/saveButton"
+        android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginBottom="80dp"
         android:elevation="2dp"
-        android:text="@string/proceed_button"
+        android:text="@string/save_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/returnButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/shareButton" />
+
+    <Button
+        android:id="@+id/returnButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="80dp"
+        android:elevation="2dp"
+        android:text="@string/return_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/editButton" />
+        app:layout_constraintStart_toEndOf="@+id/saveButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

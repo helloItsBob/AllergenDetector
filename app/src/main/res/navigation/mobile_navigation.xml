@@ -49,11 +49,49 @@
         android:label="@string/title_result"
         tools:layout="@layout/fragment_result" >
         <argument
+            android:name="imagePath"
+            app:argType="string" />
+        <argument
             android:name="result"
             app:argType="string" />
         <action
             android:id="@+id/action_navigation_result_to_navigation_scan"
             app:destination="@id/navigation_scan" />
+        <action
+            android:id="@+id/action_navigation_result_to_navigation_edit_text"
+            app:destination="@id/navigation_edit_text" />
+        <action
+            android:id="@+id/action_navigation_result_to_navigation_detection_result"
+            app:destination="@id/navigation_detection_result" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_edit_text"
+        android:name="com.bpr.allergendetector.ui.scan.EditTextFragment"
+        android:label="@string/title_edit_text"
+        tools:layout="@layout/fragment_edit_text" >
+        <argument
+            android:name="imagePath"
+            app:argType="string" />
+        <argument
+            android:name="textString"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_navigation_edit_text_to_navigation_detection_result"
+            app:destination="@id/navigation_detection_result" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_detection_result"
+        android:name="com.bpr.allergendetector.ui.scan.DetectionResultFragment"
+        android:label="@string/title_result_det"
+        tools:layout="@layout/fragment_detection_result" >
+        <argument
+            android:name="imagePath"
+            app:argType="string" />
+        <argument
+            android:name="scanString"
+            app:argType="string" />
     </fragment>
 
 </navigation>
