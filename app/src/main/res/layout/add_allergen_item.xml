@@ -65,6 +65,7 @@
                 android:layout_weight="5"
                 android:max="2"
                 android:paddingHorizontal="40dp"
+                android:paddingVertical="16dp"
                 android:progress="0"
                 android:progressTint="@color/purple_200"
                 android:thumbTint="@color/purple_500" />
