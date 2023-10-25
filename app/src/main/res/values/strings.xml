@@ -34,9 +34,4 @@
     <string name="allergen">Allergen</string>
     <string name="mild">Mild</string>
     <string name="severe">Severe</string>
-    <string name="edit_button">Edit</string>
-    <string name="image_description">Resulting image of the scan</string>
-    <string name="title_edit_text">Edit Text</string>
-    <string name="share_button">Share</string>
-    <string name="save_button">Save</string>
 </resources>

@@ -1,9 +1,7 @@
 package com.bpr.allergendetector.ui.scan
 
-import android.content.Context
 import android.content.Context.VIBRATOR_MANAGER_SERVICE
 import android.content.Context.VIBRATOR_SERVICE
-import android.content.DialogInterface
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -14,14 +12,11 @@ import android.os.VibratorManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bpr.allergendetector.MainActivity
@@ -42,7 +37,6 @@ class DetectionResultFragment : Fragment() {
     // create a media player for the sound
     private lateinit var mediaPlayer: MediaPlayer
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,19 +68,24 @@ class DetectionResultFragment : Fragment() {
                 )
             )
 
-            // vibrate the phone
-            val vibrator: VibratorManager =
-                requireContext().getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
-            val timings: LongArray = longArrayOf(300, 200, 100)
-            val amplitudes: IntArray = intArrayOf(90, 200, 160)
-            val repeatIndex = -1 // Do not repeat.
-            vibrator.defaultVibrator.vibrate(
-                VibrationEffect.createWaveform(
-                    timings,
-                    amplitudes,
-                    repeatIndex
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vibrator: VibratorManager =
+                    requireContext().getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                val timings: LongArray = longArrayOf(300, 200, 100)
+                val amplitudes: IntArray = intArrayOf(90, 200, 160)
+                val repeatIndex = -1 // Do not repeat.
+                vibrator.defaultVibrator.vibrate(
+                    VibrationEffect.createWaveform(
+                        timings,
+                        amplitudes,
+                        repeatIndex
+                    )
                 )
-            )
+            } else {
+                // if version is less than S, use deprecated method
+                val vibrator = activity?.getSystemService(VIBRATOR_SERVICE) as Vibrator?
+                vibrator!!.vibrate(longArrayOf(300, 200, 100), -1)
+            }
 
             // make a sound
             if (!this::mediaPlayer.isInitialized) {
@@ -102,11 +101,19 @@ class DetectionResultFragment : Fragment() {
         }
 
         binding.shareButton.setOnClickListener {
-            // TODO: share the result
+            Toast.makeText(
+                requireContext(),
+                "Not yet implemented",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         binding.saveButton.setOnClickListener {
-            // TODO: save the result
+            Toast.makeText(
+                requireContext(),
+                "Not yet implemented",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         binding.returnButton.setOnClickListener {

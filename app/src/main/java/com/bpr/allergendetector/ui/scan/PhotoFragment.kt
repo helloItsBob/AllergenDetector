@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
@@ -61,19 +63,37 @@ class PhotoFragment : Fragment() {
 
         binding.useButton.setOnClickListener {
             // TODO("Implement the logic to use the photo - crop it and send to ML model.")
-            Toast.makeText(requireContext(), "Image is being processed", Toast.LENGTH_SHORT).show()
 
             // ML Kit Text Recognition
             val image = photoViewModel.imageFromPath(requireContext(), Uri.parse(imagePath))
             val resultFuture = photoViewModel.performTextRecognition(image)
             resultFuture.thenApply { resultText ->
                 // switch to a fragment with a result string as an argument
-                val action =
-                    PhotoFragmentDirections.actionNavigationPhotoToNavigationResult(
-                        imagePath,
-                        resultText
-                    )
-                findNavController().navigate(action)
+                if (resultText.isEmpty()) {
+                    Toast.makeText(
+                        requireContext(),
+                        "No text found, please try again!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    // animate the button
+                    val anim: Animation = AlphaAnimation(0.5f, 1.0f)
+                    anim.duration = 500
+                    anim.repeatMode = Animation.REVERSE
+                    anim.repeatCount = 15
+
+                    binding.retakeButton.startAnimation(anim)
+
+                    return@thenApply
+
+                } else {
+                    val action =
+                        PhotoFragmentDirections.actionNavigationPhotoToNavigationResult(
+                            imagePath,
+                            resultText
+                        )
+                    findNavController().navigate(action)
+                }
             }
         }
 
