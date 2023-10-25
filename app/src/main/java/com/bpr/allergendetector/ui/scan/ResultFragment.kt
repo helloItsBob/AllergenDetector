@@ -1,5 +1,6 @@
 package com.bpr.allergendetector.ui.scan
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,14 +39,29 @@ class ResultFragment : Fragment() {
         val actionBar: ActionBar? = (activity as MainActivity?)?.supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(false)
 
+        // set the image and text
+        val resultPicture = args.imagePath
+        binding.imageView.setImageURI(Uri.parse(resultPicture))
+
         val resultText = args.result
         binding.textViewResult.text = resultText
 
-        binding.buttonScanAgain.setOnClickListener {
-            findNavController().popBackStack(
-                R.id.navigation_scan,
-                false
+        // navigate to edit text fragment with a passed argument
+        binding.editButton.setOnClickListener {
+            val action =
+                ResultFragmentDirections.actionNavigationResultToNavigationEditText(
+                    resultPicture,
+                    resultText
+                )
+            findNavController().navigate(action)
+        }
+
+        binding.buttonProceed.setOnClickListener {
+            val action = ResultFragmentDirections.actionNavigationResultToNavigationDetectionResult(
+                resultPicture,
+                resultText
             )
+            findNavController().navigate(action)
         }
 
         resultViewModel.handleOnBackPressed(this)
