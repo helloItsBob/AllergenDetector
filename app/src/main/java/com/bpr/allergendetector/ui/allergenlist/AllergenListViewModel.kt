@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+
 class AllergenListViewModel : ViewModel() {
 
     //Method to go back to previous fragment in the stack
@@ -12,8 +13,8 @@ class AllergenListViewModel : ViewModel() {
         navController.popBackStack()
     }
 
-    private val _allergenTempList = MutableLiveData<List<Allergen>>().apply {
-        value = listOf(
+    private val _allergenTempList = MutableLiveData<ArrayList<Allergen>>().apply {
+        value = arrayListOf(
             Allergen("Peanuts", 1),
             Allergen("Tree Nuts", 2),
             Allergen("Milk", 3),
@@ -26,5 +27,5 @@ class AllergenListViewModel : ViewModel() {
             Allergen("Mustard", 1),
         )
     }
-    val allergenTempList: MutableLiveData<List<Allergen>> = _allergenTempList
+    val allergenTempList: MutableLiveData<ArrayList<Allergen>> = _allergenTempList
 }

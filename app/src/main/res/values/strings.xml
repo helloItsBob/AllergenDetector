@@ -24,4 +24,7 @@
     <string name="add_allergen">Add Allergen</string>
     <string name="go_back">Go Back</string>
     <string name="logout">Logout</string>
+    <string name="allergen">Allergen</string>
+    <string name="mild">Mild</string>
+    <string name="severe">Severe</string>
 </resources>

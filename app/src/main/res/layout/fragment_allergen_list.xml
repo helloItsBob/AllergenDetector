@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".ui.allergenlist.AllergenListFragment"
-        tools:listitem="@layout/fragment_allergen_item" />
+        tools:listitem="@layout/allergen_item" />
 
     <View
         android:id="@+id/bottomBarrier"
