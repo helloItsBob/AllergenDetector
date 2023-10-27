@@ -17,6 +17,9 @@ jobs:
   build_app:
     name: Build android apk file
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./${{ env.phone_app_dir }}
     steps:
     - uses: actions/checkout@v3
     - name: Set current date as env variable
@@ -30,11 +33,11 @@ jobs:
         distribution: 'temurin'
         cache: gradle
     - name: Grant execute permission for gradlew
-      run: chmod +x ${{ env.phone_app_dir }}/gradlew
+      run: chmod +x gradlew
     - name: Build with Gradle #also runs gradle tests
       run: ./gradlew build
     - name: Upload APK Debug - ${{ env.repository_name }}
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.date_today }}- ${{ env.repository_name }} - generated APK debug
-        path: ${{ env.phone_app_dir }}/${{ env.main_project_module }}/build/outputs/apk/debug/
+        path: ${{ env.main_project_module }}/build/outputs/apk/debug/
