@@ -4,16 +4,22 @@ name: build of android app
 
 env:
   main_project_module: app
+  phone_app_dir: Android_Phone_App
 
 on:
   pull_request:
-    branches: [main]  
+    branches: [main]
+    paths:
+    - 'Android_Phone_App/**'  
   workflow_dispatch:   #for manual run
           
 jobs:
   build_app:
     name: Build android apk file
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./${{ env.phone_app_dir }}
     steps:
     - uses: actions/checkout@v3
     - name: Set current date as env variable
@@ -34,4 +40,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.date_today }}- ${{ env.repository_name }} - generated APK debug
-        path: ${{ env.main_project_module }}/build/outputs/apk/debug/
+        path: ${{ env.phone_app_dir }}/${{ env.main_project_module }}/build/outputs/apk/debug/
