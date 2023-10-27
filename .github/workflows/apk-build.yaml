@@ -4,6 +4,7 @@ name: build of android app
 
 env:
   main_project_module: app
+  phone_app_dir: Android_Phone_App
 
 on:
   pull_request:
@@ -28,14 +29,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: gradle
-    - name: Move to phone app directory
-      run: cd Android_Phone_App
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      run: chmod +x ${{ env.phone_app_dir }}/gradlew
     - name: Build with Gradle #also runs gradle tests
-      run: ./gradlew build
+      run: ./${{ env.phone_app_dir }}/gradlew build
     - name: Upload APK Debug - ${{ env.repository_name }}
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.date_today }}- ${{ env.repository_name }} - generated APK debug
-        path: ${{ env.main_project_module }}/build/outputs/apk/debug/
+        path: ${{ env.phone_app_dir }}/${{ env.main_project_module }}/build/outputs/apk/debug/
