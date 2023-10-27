@@ -7,7 +7,9 @@ env:
 
 on:
   pull_request:
-    branches: [main]  
+    branches: [main]
+    paths:
+    - 'Android_Phone_App/**'  
   workflow_dispatch:   #for manual run
           
 jobs:
