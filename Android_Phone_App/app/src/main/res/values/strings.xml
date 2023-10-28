@@ -34,4 +34,6 @@
     <string name="allergen">Allergen</string>
     <string name="mild">Mild</string>
     <string name="severe">Severe</string>
+    <string name="open_gallery_button">Open Gallery</string>
+    <string name="recent_scans_button">Recent Scans</string>
 </resources>
