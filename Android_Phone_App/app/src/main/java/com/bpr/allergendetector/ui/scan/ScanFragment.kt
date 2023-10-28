@@ -1,6 +1,7 @@
 package com.bpr.allergendetector.ui.scan
 
 import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
@@ -14,6 +15,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -42,6 +45,8 @@ class ScanFragment : Fragment() {
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
 
+    private var galleryLauncher: ActivityResultLauncher<Intent>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -64,6 +69,36 @@ class ScanFragment : Fragment() {
         // Set up the listeners for take photo and video capture buttons
         binding.imageCaptureButton.setOnClickListener { takePhoto() }
         cameraExecutor = Executors.newSingleThreadExecutor()
+
+        // setup button listeners
+        binding.recentScanButton.setOnClickListener {
+            Toast.makeText(requireContext(), "Recent Scan not yet implemented", Toast.LENGTH_SHORT)
+                .show()
+        }
+
+        galleryLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data: Intent? = result.data
+                    if (data != null) {
+                        val selectedImageUri = data.data
+                        // Handle the selected image URI here
+                        if (selectedImageUri != null) {
+                            val action =
+                                ScanFragmentDirections.actionNavigationScanToNavigationPhoto(
+                                    selectedImageUri.toString()
+                                )
+                            findNavController().navigate(action)
+                        }
+                    }
+                }
+            }
+
+        binding.openGalleryButton.setOnClickListener {
+            val galleryIntent =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            galleryLauncher?.launch(galleryIntent)
+        }
 
         return root
     }
@@ -108,7 +143,8 @@ class ScanFragment : Fragment() {
 
                     // navigate to photo fragment with a passed argument
                     val imagePath = output.savedUri.toString()
-                    val action = ScanFragmentDirections.actionNavigationScanToNavigationPhoto(imagePath)
+                    val action =
+                        ScanFragmentDirections.actionNavigationScanToNavigationPhoto(imagePath)
                     findNavController().navigate(action)
 
                     // TODO("Later on we are going to save only the used images for inference.")
