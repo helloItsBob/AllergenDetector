@@ -98,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(TAG, "signInWithEmail:success")
                     val user = auth.currentUser
                     updateUI(user)
-                    welcomeUser()
+                    welcomeUser(user?.email.toString())
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
@@ -115,13 +115,12 @@ class LoginActivity : AppCompatActivity() {
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
-        welcomeUser()
     }
 
-    private fun welcomeUser() {
+    private fun welcomeUser(email: String) {
         Toast.makeText(
             baseContext,
-            "Welcome, " + auth.currentUser?.email + "!",
+            "Welcome, $email!",
             Toast.LENGTH_SHORT,
         ).show()
     }
@@ -146,6 +145,7 @@ class LoginActivity : AppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)!!
                 Log.d(TAG2, "firebaseAuthWithGoogle:" + account.id)
                 firebaseAuthWithGoogle(account.idToken!!)
+                welcomeUser(account.email.toString())
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG2, "Google sign in failed", e)
