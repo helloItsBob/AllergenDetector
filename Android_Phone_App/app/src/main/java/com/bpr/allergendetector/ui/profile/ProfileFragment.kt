@@ -1,5 +1,6 @@
 package com.bpr.allergendetector.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,14 +8,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bpr.allergendetector.LoginActivity
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.FragmentProfileBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class ProfileFragment : Fragment() {
 
@@ -58,14 +60,12 @@ class ProfileFragment : Fragment() {
         recyclerView.adapter = profileButtonAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        //TODO: implement logout
         val logoutButton: Button = binding.logoutButton
         logoutButton.setOnClickListener {
-            Toast.makeText(
-                logoutButton.context,
-                "Logout is not implemented.",
-                Toast.LENGTH_SHORT
-            ).show()
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(activity, LoginActivity::class.java)
+            startActivity(intent)
+            activity?.finish()
         }
 
         return root

@@ -36,4 +36,16 @@
     <string name="severe">Severe</string>
     <string name="open_gallery_button">Open Gallery</string>
     <string name="recent_scans_button">Recent Scans</string>
+    <string name="default_web_client_id">AIzaSyCMligrhppYbvePujLA9YWZ_r6IxNe7TC8</string>
+    <string name="login_message">Already have an account? Login</string>
+    <string name="register_button">Register</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="app_logo">App Logo</string>
+    <string name="register_message">Don\'t have an account yet? Register</string>
+    <string name="google_login_button">Google Login</string>
+    <string name="login_button">Login</string>
+    <string name="password_hint">Password</string>
+    <string name="email_hint">Email</string>
 </resources>
