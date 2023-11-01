@@ -20,6 +20,7 @@
             android:id="@+id/profileImage"
             android:layout_width="match_parent"
             android:layout_height="100dp"
+            android:layout_margin="20dp"
             android:layout_gravity="center"
             android:layout_weight="2"
             android:contentDescription="@string/profile_avatar"
