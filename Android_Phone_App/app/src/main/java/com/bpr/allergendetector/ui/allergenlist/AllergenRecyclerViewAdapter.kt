@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.AddAllergenItemBinding
@@ -16,8 +15,10 @@ import com.bpr.allergendetector.databinding.AllergenItemBinding
 import com.bpr.allergendetector.ui.UiText
 
 class AllergenRecyclerViewAdapter(
-    private val values: ArrayList<Allergen>
+    private var values: ArrayList<Allergen>
 ) : RecyclerView.Adapter<AllergenRecyclerViewAdapter.ViewHolder>() {
+
+    var buttonClickListener: ButtonClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -32,7 +33,9 @@ class AllergenRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.idView.text = position.toString()
+        // start numbering from 1
+        val displayedPosition = position + 1
+        holder.idView.text = displayedPosition.toString()
         holder.contentView.text = item.name
         holder.severityView = when (item.severity) {
             1 -> {
@@ -55,11 +58,11 @@ class AllergenRecyclerViewAdapter(
                 holder.severityView
             }
         }
+
         //Edit button implementation
         holder.editButtonView.setOnClickListener {
             val allergenItem = values[position]
-            var editItemBinding: AddAllergenItemBinding? = null
-            editItemBinding = AddAllergenItemBinding.inflate(
+            val editItemBinding = AddAllergenItemBinding.inflate(
                 LayoutInflater.from(holder.editButtonView.context),
                 null,
                 false
@@ -77,39 +80,33 @@ class AllergenRecyclerViewAdapter(
                 .setPositiveButton("Ok") { dialog, _ ->
                     allergenItem.name = name.text.toString()
                     allergenItem.severity = severity.progress.toString().toInt() + 1
-                    notifyItemChanged(position, values[position])
-                    Toast.makeText(
-                        holder.editButtonView.context,
-                        "Allergen information is edited",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    buttonClickListener?.onEditButtonClicked(
+                        Allergen(
+                            allergenItem.id,
+                            allergenItem.name,
+                            allergenItem.severity
+                        )
+                    )
                     dialog.dismiss()
-
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
-                    dialog.dismiss()
+                    dialog.cancel()
                 }
                 .create()
                 .show()
         }
+
         //Remove button implementation
         holder.deleteButtonView.setOnClickListener {
             AlertDialog.Builder(holder.deleteButtonView.context)
                 .setTitle("Remove ${item.name}?")
                 .setMessage("Are you sure that you want to do this?")
                 .setPositiveButton("Yes") { dialog, _ ->
-                    values.removeAt(position)
-                    notifyItemRemoved(position)
-                    notifyItemRangeChanged(position, values.size)
-                    Toast.makeText(
-                        holder.deleteButtonView.context,
-                        "Removed ${item.name}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    buttonClickListener?.onDeleteButtonClicked(item)
                     dialog.dismiss()
                 }
                 .setNegativeButton("No") { dialog, _ ->
-                    dialog.dismiss()
+                    dialog.cancel()
                 }
                 .create()
                 .show()
@@ -131,4 +128,13 @@ class AllergenRecyclerViewAdapter(
         }
     }
 
+    interface ButtonClickListener {
+        fun onEditButtonClicked(allergen: Allergen)
+        fun onDeleteButtonClicked(allergen: Allergen)
+    }
+
+    fun updateData(newData: List<Allergen>) {
+        values = newData as ArrayList<Allergen>
+        notifyDataSetChanged()
+    }
 }

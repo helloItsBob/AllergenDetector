@@ -17,7 +17,7 @@ import com.bpr.allergendetector.databinding.AddAllergenItemBinding
 import com.bpr.allergendetector.databinding.FragmentAllergenListBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class AllergenListFragment : Fragment() {
+class AllergenListFragment : Fragment(), AllergenRecyclerViewAdapter.ButtonClickListener {
 
     private var _binding: FragmentAllergenListBinding? = null
 
@@ -25,25 +25,34 @@ class AllergenListFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private lateinit var allergenListViewModel: AllergenListViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-        val allergenListViewModel = ViewModelProvider(this)[AllergenListViewModel::class.java]
+        allergenListViewModel = ViewModelProvider(this)[AllergenListViewModel::class.java]
 
         _binding = FragmentAllergenListBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        // Create the adapter and assign it to the RecyclerView
+        val adapter = AllergenRecyclerViewAdapter(ArrayList())
 
         val recyclerView: RecyclerView = binding.allergenList
-
-        val allergenPlaceholderList: ArrayList<Allergen> =
-            allergenListViewModel.allergenTempList.value as ArrayList<Allergen>
-
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = AllergenRecyclerViewAdapter(allergenPlaceholderList)
+        recyclerView.adapter = adapter
+
+        // Observe the LiveData from your ViewModel
+        allergenListViewModel.allAllergens.observe(viewLifecycleOwner) { allergenList ->
+            // Update the data in the adapter when LiveData changes
+            adapter.updateData(allergenList)
+        }
+
+        // Set the buttonClickListener for the adapter
+        adapter.buttonClickListener = this@AllergenListFragment
 
         //hiding back button on top of the screen
         val actionBar: ActionBar? = (activity as MainActivity?)?.supportActionBar
@@ -54,7 +63,7 @@ class AllergenListFragment : Fragment() {
             allergenListViewModel.goBack(this)
         }
 
-        //TODO: implement storing for allergens
+        // add allergen
         val addAllergenButton: FloatingActionButton = binding.floatingAddButton
         addAllergenButton.setOnClickListener {
 
@@ -72,13 +81,30 @@ class AllergenListFragment : Fragment() {
             addDialog.setPositiveButton("Ok") { dialog, _ ->
                 val name = allergenName.text.toString()
                 val severity = allergenSeverity.progress.toString()
-                allergenPlaceholderList.add(
-                    Allergen(
-                        name,
-                        severity.toInt() + 1 //need to add +1 because seekbar goes from 0 to 2 while implementation is 1 to 3
+                for (allergen in allergenListViewModel.allAllergens.value!!) {
+                    if (allergen.name == name) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Allergen already exists",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@setPositiveButton
+                    } else if (name.isEmpty()) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Allergen name cannot be empty",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@setPositiveButton
+                    }
+                }
+                // store the allergen in the room database
+                allergenListViewModel.insert(Allergen(0, name, severity.toInt() + 1))
+                allergenListViewModel.allAllergens.value?.let { it1 ->
+                    recyclerView.adapter?.notifyItemInserted(
+                        it1.size
                     )
-                )
-                recyclerView.adapter?.notifyItemInserted(allergenPlaceholderList.size - 1)
+                }
                 Toast.makeText(
                     requireContext(),
                     "Successfully added allergen to the list",
@@ -110,5 +136,23 @@ class AllergenListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onEditButtonClicked(allergen: Allergen) {
+        allergenListViewModel.update(allergen)
+        Toast.makeText(
+            requireContext(),
+            "Allergen information has been edited",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    override fun onDeleteButtonClicked(allergen: Allergen) {
+        allergenListViewModel.delete(allergen)
+        Toast.makeText(
+            requireContext(),
+            "Removed allergen: ${allergen.name}",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

@@ -1,31 +1,41 @@
 package com.bpr.allergendetector.ui.allergenlist
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import kotlinx.coroutines.launch
 
-class AllergenListViewModel : ViewModel() {
+class AllergenListViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val repo: AllergenRepo = AllergenRepo(AllergenDB.getInstance(application).allergenDAO())
+    val allAllergens: LiveData<List<Allergen>> = repo.getAllAllergens()
+
+    fun insert(allergen: Allergen) {
+        viewModelScope.launch {
+            if (allergen.name.isNotEmpty()) {
+                repo.insert(allergen)
+            }
+        }
+    }
+
+    fun update(allergen: Allergen) {
+        viewModelScope.launch {
+            repo.update(allergen)
+        }
+    }
+
+    fun delete(allergen: Allergen) {
+        viewModelScope.launch {
+            repo.delete(allergen)
+        }
+    }
 
     //Method to go back to previous fragment in the stack
     fun goBack(fragment: Fragment) {
         val navController = findNavController(fragment)
         navController.popBackStack()
     }
-
-    private val _allergenTempList = MutableLiveData<ArrayList<Allergen>>().apply {
-        value = arrayListOf(
-            Allergen("Peanuts", 1),
-            Allergen("Tree Nuts", 2),
-            Allergen("Milk", 3),
-            Allergen("Eggs", 1),
-            Allergen("Wheat", 2),
-            Allergen("Soy", 3),
-            Allergen("Fish", 1),
-            Allergen("Shellfish", 2),
-            Allergen("Sesame", 3),
-            Allergen("Mustard", 1),
-        )
-    }
-    val allergenTempList: MutableLiveData<ArrayList<Allergen>> = _allergenTempList
 }
