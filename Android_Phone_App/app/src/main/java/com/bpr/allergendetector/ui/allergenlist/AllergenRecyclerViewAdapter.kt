@@ -80,13 +80,20 @@ class AllergenRecyclerViewAdapter(
                 .setPositiveButton("Ok") { dialog, _ ->
                     allergenItem.name = name.text.toString()
                     allergenItem.severity = severity.progress.toString().toInt() + 1
-                    buttonClickListener?.onEditButtonClicked(
-                        Allergen(
-                            allergenItem.id,
-                            allergenItem.name,
-                            allergenItem.severity
-                        )
-                    )
+
+                    if (allergenItem.name.isNotEmpty()) {
+                        buttonClickListener?.onEditButtonClicked(allergenItem)
+                    } else {
+                        AlertDialog.Builder(holder.editButtonView.context)
+                            .setTitle("Empty name")
+                            .setMessage("Please enter a name for the allergen")
+                            .setPositiveButton("Ok") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .create()
+                            .show()
+                    }
+
                     dialog.dismiss()
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
