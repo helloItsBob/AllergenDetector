@@ -3,6 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
+    id("kotlin-android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -77,4 +79,12 @@ dependencies {
     // Firebase dependencies
     implementation("com.google.firebase:firebase-auth:22.2.0")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
+
+    // Room dependencies
+    val roomVersion = "2.6.0"
+    implementation("androidx.room:room-ktx:$roomVersion")
+    //noinspection KaptUsageInsteadOfKsp
+    kapt("androidx.room:room-compiler:$roomVersion")
+    androidTestImplementation("androidx.room:room-testing:$roomVersion")
+
 }
