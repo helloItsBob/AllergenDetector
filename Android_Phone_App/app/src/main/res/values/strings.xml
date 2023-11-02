@@ -48,4 +48,6 @@
     <string name="login_button">Login</string>
     <string name="password_hint">Password</string>
     <string name="email_hint">Email</string>
+    <string name="harmful_ingredients">HARMFUL INGREDIENTS:</string>
+    <string name="no_harmful_ingredients">NO HARMFUL INGREDIENTS DETECTED</string>
 </resources>

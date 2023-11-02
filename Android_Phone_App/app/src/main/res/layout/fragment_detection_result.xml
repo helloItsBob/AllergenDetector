@@ -46,12 +46,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textResult">
 
-        <TextView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/textViewResult"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            tools:listitem="@layout/harmful_item" />
     </ScrollView>
 
     <Button
