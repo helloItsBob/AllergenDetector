@@ -87,4 +87,6 @@ dependencies {
     kapt("androidx.room:room-compiler:$roomVersion")
     androidTestImplementation("androidx.room:room-testing:$roomVersion")
 
+    // material design
+    implementation("com.google.android.material:material:1.10.0")
 }

@@ -17,11 +17,16 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.ActionBar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bpr.allergendetector.MainActivity
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.FragmentDetectionResultBinding
+import com.bpr.allergendetector.ui.UiText
+import com.bpr.allergendetector.ui.allergenlist.Allergen
 
 
 class DetectionResultFragment : Fragment() {
@@ -43,6 +48,8 @@ class DetectionResultFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
+        val detectionResultViewModel = ViewModelProvider(this)[DetectionResultViewModel::class.java]
+
         _binding = FragmentDetectionResultBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -54,50 +61,20 @@ class DetectionResultFragment : Fragment() {
         val resultPicture = args.imagePath
         binding.imageView.setImageURI(Uri.parse(resultPicture))
 
-        // for now just set it in text view, later implement actual detection logic
+        // resulting scan textString from result/edit text fragment
         val resultText = args.scanString
-        binding.textResult.text = "HARMFUL INGREDIENTS:"
-        binding.textViewResult.text = resultText
 
-        if (binding.textResult.text == "HARMFUL INGREDIENTS:") {
-            // set text color to red
-            binding.textResult.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.red
-                )
-            )
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val vibrator: VibratorManager =
-                    requireContext().getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
-                val timings: LongArray = longArrayOf(300, 200, 100)
-                val amplitudes: IntArray = intArrayOf(90, 200, 160)
-                val repeatIndex = -1 // Do not repeat.
-                vibrator.defaultVibrator.vibrate(
-                    VibrationEffect.createWaveform(
-                        timings,
-                        amplitudes,
-                        repeatIndex
-                    )
-                )
-            } else {
-                // if version is less than S, use deprecated method
-                val vibrator = activity?.getSystemService(VIBRATOR_SERVICE) as Vibrator?
-                vibrator!!.vibrate(longArrayOf(300, 200, 100), -1)
+        // create a list of detected allergens
+        val detectedAllergens: ArrayList<Allergen> = ArrayList()
+        detectionResultViewModel.allAllergens.observe(viewLifecycleOwner) { allergenList ->
+            for (allergen in allergenList) {
+                if (resultText.contains(allergen.name, ignoreCase = true)) {
+                    detectedAllergens.add(allergen)
+                }
             }
 
-            // make a sound
-            if (!this::mediaPlayer.isInitialized) {
-                mediaPlayer = MediaPlayer.create(
-                    requireContext(),
-                    R.raw.siren
-                )
-            }
-            mediaPlayer.start()
-
-        } else {
-            // Do nothing for now
+            // display the result
+            displayDetectionResult(detectedAllergens)
         }
 
         binding.shareButton.setOnClickListener {
@@ -129,6 +106,76 @@ class DetectionResultFragment : Fragment() {
         }
 
         return root
+    }
+
+    private fun displayDetectionResult(detectedAllergens: ArrayList<Allergen>) {
+        if (detectedAllergens.isNotEmpty()) {
+            binding.textResult.text =
+                UiText.StringResource(R.string.harmful_ingredients).asString(context)
+            // set text color to red
+            binding.textResult.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.red
+                )
+            )
+
+            // adapter for the recycler view of detected allergens
+            val adapter = DetectionResultAdapter(detectedAllergens)
+            val recyclerView: RecyclerView = binding.textViewResult
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            recyclerView.adapter = adapter
+
+            // vibrate
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vibrator: VibratorManager =
+                    requireContext().getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                val timings: LongArray = longArrayOf(300, 200, 100)
+                val amplitudes: IntArray = intArrayOf(90, 200, 160)
+                val repeatIndex = -1 // Do not repeat.
+                vibrator.defaultVibrator.vibrate(
+                    VibrationEffect.createWaveform(
+                        timings,
+                        amplitudes,
+                        repeatIndex
+                    )
+                )
+            } else {
+                // if version is less than S, use deprecated method
+                val vibrator = activity?.getSystemService(VIBRATOR_SERVICE) as Vibrator?
+                vibrator!!.vibrate(longArrayOf(300, 200, 100), -1)
+            }
+
+            // make a sound
+            if (!this::mediaPlayer.isInitialized) {
+                mediaPlayer = MediaPlayer.create(
+                    requireContext(),
+                    R.raw.siren
+                )
+            }
+            mediaPlayer.start()
+
+
+        } else {
+            binding.textResult.text =
+                UiText.StringResource(R.string.no_harmful_ingredients).asString(context)
+            // set text color to green
+            binding.textResult.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.green
+                )
+            )
+
+            // make a sound
+            if (!this::mediaPlayer.isInitialized) {
+                mediaPlayer = MediaPlayer.create(
+                    requireContext(),
+                    R.raw.success
+                )
+            }
+            mediaPlayer.start()
+        }
     }
 
     override fun onDestroyView() {
