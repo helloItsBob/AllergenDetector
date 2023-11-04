@@ -34,6 +34,12 @@
         tools:layout="@layout/fragment_allergen_list" />
 
     <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.bpr.allergendetector.ui.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
         android:id="@+id/navigation_photo"
         android:name="com.bpr.allergendetector.ui.scan.PhotoFragment"
         android:label="@string/title_photo"
