@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bpr.allergendetector.R
 
+
 class SettingsButtonAdapter(
     private val buttonList: List<String>
 ) : RecyclerView.Adapter<SettingsButtonAdapter.CustomViewHolder>() {
@@ -22,10 +23,25 @@ class SettingsButtonAdapter(
         val button: Button = itemView.findViewById(R.id.profileButton)
     }
 
+    interface OnButtonClickListener {
+        fun onButtonClicked(buttonName: String)
+    }
+
+    private var buttonClickListener: OnButtonClickListener? = null
+
+    fun setOnButtonClickListener(listener: OnButtonClickListener?) {
+        buttonClickListener = listener
+    }
+
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         val buttonName = buttonList[position]
         holder.button.text = buttonName
+
+        // Set up the button click listener
         holder.button.setOnClickListener {
+            if (buttonClickListener != null) {
+                buttonClickListener!!.onButtonClicked(buttonName)
+            }
             Toast.makeText(
                 holder.button.context,
                 "$buttonName button clicked",
