@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bpr.allergendetector.R
+import com.bpr.allergendetector.ui.UiText
 
 class ProfileButtonAdapter(
     private val buttonData: List<String>,
@@ -30,9 +31,15 @@ class ProfileButtonAdapter(
         val buttonText = buttonData[position]
         holder.button.text = buttonText
         holder.button.setOnClickListener {
-            when (position) {
-                0 -> {
-                    navController.navigate(R.id.navigation_allergen_list) //TODO: Add navigation
+            when (buttonText) {
+                UiText.StringResource(R.string.profile_button_allergens)
+                    .asString(holder.button.context) -> {
+                    navController.navigate(R.id.navigation_allergen_list)
+                }
+
+                UiText.StringResource(R.string.profile_button_settings)
+                    .asString(holder.button.context) -> {
+                    navController.navigate(R.id.navigation_settings)
                 }
 
                 else -> {
