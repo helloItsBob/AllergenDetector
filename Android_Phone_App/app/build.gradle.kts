@@ -54,6 +54,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("com.google.firebase:firebase-firestore:24.9.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -90,4 +91,7 @@ dependencies {
 
     // material design
     implementation("com.google.android.material:material:1.10.0")
+
+    // Gson
+    implementation("com.google.code.gson:gson:2.9.0")
 }

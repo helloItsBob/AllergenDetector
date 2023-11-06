@@ -21,6 +21,12 @@ class AllergenListViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
+    fun insertAll(allergens: List<Allergen>) {
+        viewModelScope.launch {
+            repo.insertAll(allergens)
+        }
+    }
+
     fun update(allergen: Allergen) {
         viewModelScope.launch {
             repo.update(allergen)
@@ -30,6 +36,12 @@ class AllergenListViewModel(application: Application) : AndroidViewModel(applica
     fun delete(allergen: Allergen) {
         viewModelScope.launch {
             repo.delete(allergen)
+        }
+    }
+
+    fun deleteAll() {
+        viewModelScope.launch {
+            repo.deleteAll()
         }
     }
 
