@@ -14,11 +14,19 @@ class AllergenRepo(private val allergenDAO: AllergenDAO) {
         allergenDAO.insert(allergen)
     }
 
+    suspend fun insertAll(allergens: List<Allergen>) {
+        allergenDAO.insertAll(allergens)
+    }
+
     suspend fun update(allergen: Allergen) {
        allergenDAO.update(allergen)
     }
 
     suspend fun delete(allergen: Allergen) {
         allergenDAO.delete(allergen)
+    }
+
+    suspend fun deleteAll() {
+        allergenDAO.deleteAll()
     }
 }

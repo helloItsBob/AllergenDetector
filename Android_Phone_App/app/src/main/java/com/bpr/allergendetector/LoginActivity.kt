@@ -12,6 +12,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bpr.allergendetector.databinding.ActivityLoginBinding
+import com.bpr.allergendetector.ui.allergenlist.Allergen
+import com.bpr.allergendetector.ui.allergenlist.AllergenListViewModel
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -21,7 +23,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 
 class LoginActivity : AppCompatActivity() {
@@ -110,6 +115,9 @@ class LoginActivity : AppCompatActivity() {
                     val user = auth.currentUser
                     updateUI(user)
                     welcomeUser(user?.email.toString())
+
+                    updateUserAllergens(user)
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
@@ -121,6 +129,37 @@ class LoginActivity : AppCompatActivity() {
                     updateUI(null)
                 }
             }
+    }
+
+    private fun updateUserAllergens(user: FirebaseUser?) {
+
+        val listViewModel = AllergenListViewModel(application)
+
+        val db = Firebase.firestore
+        val docRef = db.collection("users").document(user?.uid.toString())
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val data = document.data
+
+                    // Store data in Room database
+                    val allergenList = parseAllergenJson(data?.get("allergen").toString())
+                    listViewModel.deleteAll()
+                    listViewModel.insertAll(allergenList)
+
+                } else {
+                    Log.e("DB fetch", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("DB fetch", "get failed with ", exception)
+            }
+    }
+
+    private fun parseAllergenJson(jsonData: String): List<Allergen> {
+        val gson = Gson()
+        val listType = object : TypeToken<List<Allergen>>() {}.type
+        return gson.fromJson(jsonData, listType)
     }
 
     private fun signIn() {
@@ -209,6 +248,9 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(TAG2, "signInWithCredential:success")
                     val user = auth.currentUser
                     updateUI(user)
+
+                    updateUserAllergens(user)
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG2, "signInWithCredential:failure", task.exception)
@@ -220,6 +262,5 @@ class LoginActivity : AppCompatActivity() {
     companion object {
         const val TAG = "EmailPassword"
         private const val TAG2 = "GoogleSignIn"
-        private const val RC_SIGN_IN = 9001
     }
 }

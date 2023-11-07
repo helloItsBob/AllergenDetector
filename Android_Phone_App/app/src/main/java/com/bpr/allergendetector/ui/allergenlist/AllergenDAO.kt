@@ -12,11 +12,17 @@ interface AllergenDAO {
     @Insert
     suspend fun insert(allergen: Allergen)
 
+    @Insert
+    suspend fun insertAll(allergens: List<Allergen>)
+
     @Update
     suspend fun update(allergen: Allergen)
 
     @Delete
     suspend fun delete(allergen: Allergen)
+
+    @Query("DELETE FROM allergen_table")
+    suspend fun deleteAll()
 
     @Query("SELECT * FROM allergen_table")
     fun getAllAllergens() : LiveData<List<Allergen>>

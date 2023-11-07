@@ -1,6 +1,7 @@
 package com.bpr.allergendetector.ui.allergenlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,9 @@ import com.bpr.allergendetector.MainActivity
 import com.bpr.allergendetector.databinding.AddAllergenItemBinding
 import com.bpr.allergendetector.databinding.FragmentAllergenListBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 class AllergenListFragment : Fragment(), AllergenRecyclerViewAdapter.ButtonClickListener {
 
@@ -26,6 +30,8 @@ class AllergenListFragment : Fragment(), AllergenRecyclerViewAdapter.ButtonClick
     private val binding get() = _binding!!
 
     private lateinit var allergenListViewModel: AllergenListViewModel
+
+    private lateinit var allergenList: List<Allergen>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,6 +55,7 @@ class AllergenListFragment : Fragment(), AllergenRecyclerViewAdapter.ButtonClick
         allergenListViewModel.allAllergens.observe(viewLifecycleOwner) { allergenList ->
             // Update the data in the adapter when LiveData changes
             adapter.updateData(allergenList)
+            this.allergenList = allergenList
         }
 
         // Set the buttonClickListener for the adapter
@@ -100,11 +107,7 @@ class AllergenListFragment : Fragment(), AllergenRecyclerViewAdapter.ButtonClick
                 }
                 // store the allergen in the room database
                 allergenListViewModel.insert(Allergen(0, name, severity.toInt() + 1))
-                allergenListViewModel.allAllergens.value?.let { it1 ->
-                    recyclerView.adapter?.notifyItemInserted(
-                        it1.size
-                    )
-                }
+
                 Toast.makeText(
                     requireContext(),
                     "Successfully added allergen to the list",
@@ -136,6 +139,27 @@ class AllergenListFragment : Fragment(), AllergenRecyclerViewAdapter.ButtonClick
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        // persist the allergen list to DB
+        val db = FirebaseFirestore.getInstance()
+        val allergenMap = mapOf("allergen" to allergenList)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        Log.e("AllergenListFragment", "User ID: $userId")
+        if (userId != null) {
+            val allergensCollectionRef = db.collection("users").document(userId)
+            // update a document
+            allergensCollectionRef.set(allergenMap, SetOptions.merge())
+                .addOnSuccessListener {
+                    Log.e("AllergenList", "Allergen list updated")
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("AllergenList", "Error updating allergen list", exception)
+                }
+        }
     }
 
     override fun onEditButtonClicked(allergen: Allergen) {
