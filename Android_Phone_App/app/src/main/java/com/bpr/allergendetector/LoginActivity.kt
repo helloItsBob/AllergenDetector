@@ -1,5 +1,6 @@
 package com.bpr.allergendetector
 
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
@@ -117,6 +118,7 @@ class LoginActivity : AppCompatActivity() {
                     welcomeUser(user?.email.toString())
 
                     updateUserAllergens(user)
+                    updateProfileImage(user)
 
                 } else {
                     // If sign in fails, display a message to the user.
@@ -128,6 +130,40 @@ class LoginActivity : AppCompatActivity() {
                     ).show()
                     updateUI(null)
                 }
+            }
+    }
+
+    private fun updateProfileImage(user: FirebaseUser?) {
+
+        // clean up the shared preferences
+        val sharedPreferences =
+            getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.remove("avatar")
+        editor.apply()
+
+        var avatar = ""
+        val db = Firebase.firestore
+        val docRef = db.collection("users").document(user?.uid.toString())
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val data = document.data
+
+                    avatar = data?.get("avatar").toString()
+                    if (avatar != "null") {
+
+                        // save avatar base64 string to shared preferences
+                        editor.putString("avatar", avatar)
+                        editor.apply()
+                    }
+
+                } else {
+                    Log.e("DB fetch", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("DB fetch", "failed with ", exception)
             }
     }
 
@@ -149,6 +185,7 @@ class LoginActivity : AppCompatActivity() {
 
                 } else {
                     Log.e("DB fetch", "No such document")
+                    listViewModel.deleteAll()
                 }
             }
             .addOnFailureListener { exception ->
@@ -159,6 +196,9 @@ class LoginActivity : AppCompatActivity() {
     private fun parseAllergenJson(jsonData: String): List<Allergen> {
         val gson = Gson()
         val listType = object : TypeToken<List<Allergen>>() {}.type
+        if (jsonData == "null") {
+            return emptyList()
+        }
         return gson.fromJson(jsonData, listType)
     }
 
@@ -250,6 +290,7 @@ class LoginActivity : AppCompatActivity() {
                     updateUI(user)
 
                     updateUserAllergens(user)
+                    updateProfileImage(user)
 
                 } else {
                     // If sign in fails, display a message to the user.

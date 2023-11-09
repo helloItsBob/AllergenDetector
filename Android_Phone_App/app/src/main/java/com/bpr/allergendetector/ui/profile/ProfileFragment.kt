@@ -16,8 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bpr.allergendetector.LoginActivity
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.FragmentProfileBinding
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import com.bpr.allergendetector.ui.AvatarUtil
 import com.google.firebase.auth.FirebaseAuth
 
 class ProfileFragment : Fragment() {
@@ -39,17 +38,8 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        //TODO: Implement profile image for user
         val imageView: ImageView = binding.profileImage
-        profileViewModel.image.observe(viewLifecycleOwner) {
-//            imageView.setImageResource(it)
-            if (it != null) {
-                Glide.with(this)
-                    .load(it)
-                    .apply(RequestOptions.circleCropTransform()) // make image circular
-                    .into(imageView)
-            }
-        }
+        AvatarUtil.loadAvatarFromSharedPrefs(imageView, requireContext())
 
         val textView: TextView = binding.profileName
         profileViewModel.text.observe(viewLifecycleOwner) {
