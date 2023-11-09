@@ -1,13 +1,24 @@
 package com.bpr.allergendetector.ui.settings
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
@@ -17,8 +28,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.FragmentSettingsBinding
+import com.bpr.allergendetector.ui.AvatarUtil
 import com.bpr.allergendetector.ui.UiText
-
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import java.io.ByteArrayOutputStream
 
 class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener {
 
@@ -29,6 +46,11 @@ class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener
     private val binding get() = _binding!!
 
     private lateinit var settingsViewModel: SettingsViewModel
+
+    private var galleryLauncher: ActivityResultLauncher<Intent>? = null
+    private var selectedAvatar: ImageView? = null
+    private var selectedImageUri: Uri? = null
+    private var saveButton: Button? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,6 +101,27 @@ class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener
             ).show()
         }
 
+        // on change avatar button click
+        galleryLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data: Intent? = result.data
+                    if (data != null) {
+                        selectedImageUri = data.data
+
+                        if (selectedImageUri != null) {
+                            Log.e("SettingsFragment", "selectedImageUri: $selectedImageUri")
+                            Glide.with(this)
+                                .load(selectedImageUri)
+                                .apply(RequestOptions.circleCropTransform()) // make image circular
+                                .into(selectedAvatar!!)
+
+                            saveButton?.isEnabled = true
+                        }
+                    }
+                }
+            }
+
         binding.goBackButton.setOnClickListener {
             findNavController().popBackStack(R.id.navigation_profile, false)
         }
@@ -96,6 +139,74 @@ class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener
         when (buttonName) {
             UiText.StringResource(R.string.change_avatar_button).asString(context) -> {
                 Log.e("SettingsFragment", "$buttonName clicked")
+
+                // inflate the dialog with custom view
+                val dialogView = layoutInflater.inflate(R.layout.change_avatar_modal, null)
+                val dialogBuilder = AlertDialog.Builder(requireContext()).setView(dialogView)
+                val alertDialog = dialogBuilder.create()
+
+                val chooseFromGalleryButton =
+                    dialogView.findViewById<Button>(R.id.chooseFromGalleryButtonAvatarModal)
+                selectedAvatar = dialogView.findViewById(R.id.selectedImageAvatarModal)
+                AvatarUtil.loadAvatarFromSharedPrefs(selectedAvatar!!, requireContext())
+
+                val cancelButton = dialogView.findViewById<Button>(R.id.cancelButtonAvatarModal)
+                saveButton = dialogView.findViewById<Button>(R.id.saveButtonAvatarModal)
+                saveButton?.isEnabled = false
+
+                chooseFromGalleryButton.setOnClickListener {
+                    val galleryIntent =
+                        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    galleryLauncher?.launch(galleryIntent)
+                }
+
+                cancelButton.setOnClickListener {
+                    alertDialog.dismiss()
+                }
+
+                saveButton?.setOnClickListener {
+
+                    // convert selected image to a Base64 string
+                    val drawable = selectedAvatar?.drawable
+                    val bitmap = (drawable as BitmapDrawable).bitmap
+
+                    val byteArrayOutputStream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+                    val byteArray = byteArrayOutputStream.toByteArray()
+                    val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
+
+                    // save avatar base64 string to shared preferences for immediate use
+                    val sharedPreferences = requireActivity().getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    editor.putString("avatar", base64Image)
+                    editor.apply()
+
+                    // persist the allergen list to DB
+                    val db = FirebaseFirestore.getInstance()
+                    val avatar = mapOf("avatar" to base64Image)
+                    val userId = FirebaseAuth.getInstance().currentUser?.uid
+                    Log.e("AllergenListFragment", "User ID: $userId")
+                    if (userId != null) {
+                        val allergensCollectionRef = db.collection("users").document(userId)
+                        // update a document
+                        allergensCollectionRef.set(avatar, SetOptions.merge())
+                            .addOnSuccessListener {
+                                Log.e("SettingsFragment", "Avatar updated")
+                                Toast.makeText(
+                                    context,
+                                    "Avatar updated successfully",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.e("SettingsFragment", "Error updating avatar", exception)
+                            }
+                    }
+
+                    alertDialog.dismiss()
+                }
+
+                alertDialog.show()
             }
 
             UiText.StringResource(R.string.change_password_button).asString(context) -> {
