@@ -1,0 +1,29 @@
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Conv2D(32, (3, 3), strides=(1, 1), activation='relu', padding='same', kernel_initializer='he_normal', input_shape=(img_size, img_size,1)),
+    tf.keras.layers.MaxPooling2D(),
+    tf.keras.layers.SpatialDropout2D(0.4),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.Conv2D(64, (3, 3), strides=(1, 1), activation='relu', padding='same', kernel_initializer='he_normal'),
+    tf.keras.layers.MaxPooling2D(),
+    tf.keras.layers.SpatialDropout2D(0.4),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.Conv2D(128, (3, 3), strides=(1, 1), activation='relu', padding='same', kernel_initializer='he_normal'),
+    tf.keras.layers.SpatialDropout2D(0.4),
+    tf.keras.layers.GlobalMaxPooling2D(), #
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(units=128, activation='relu', kernel_initializer='he_normal'),
+    tf.keras.layers.Dropout(0.4),
+    tf.keras.layers.Dense(units=128, activation='relu', kernel_initializer='he_normal'),
+    tf.keras.layers.Dropout(0.4),
+    tf.keras.layers.BatchNormalization(),
+    # tf.keras.layers.Reshape((128, 1)), #these 3 layers are for the RNN and increase time taken to train by a lit 2min -> 25min per epoch on CPU
+    # tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, return_sequences=True, dropout=0.25)), #
+    # tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, return_sequences=True, dropout=0.25)), #
+    # tf.keras.layers.Flatten(),
+    #tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.Dense(units=62, activation='softmax')
+])
+
+model.compile(loss = 'categorical_crossentropy', optimizer = "adam", metrics = ['accuracy'])
+model.summary()
