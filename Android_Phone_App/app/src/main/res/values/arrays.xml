@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="dropdown_items">
+        <item>Select product category…</item>
+        <item>Dairy Products</item>
+        <item>Bakery and Bread</item>
+        <item>Meat and Seafood</item>
+        <item>Canned and Jarred Goods</item>
+        <item>Grains, Pasta, and Beans</item>
+        <item>Snack Foods</item>
+        <item>Beverages</item>
+        <item>Condiments and Spices</item>
+        <item>Sweets and Desserts</item>
+        <item>Organic and Health Foods</item>
+    </string-array>
+</resources>

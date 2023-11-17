@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bpr.allergendetector.databinding.ActivityLoginBinding
 import com.bpr.allergendetector.ui.allergenlist.Allergen
 import com.bpr.allergendetector.ui.allergenlist.AllergenListViewModel
+import com.bpr.allergendetector.ui.lists.ListsViewModel
+import com.bpr.allergendetector.ui.lists.Product
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -117,7 +119,7 @@ class LoginActivity : AppCompatActivity() {
                     updateUI(user)
                     welcomeUser(user?.email.toString())
 
-                    updateUserAllergens(user)
+                    updateUserAllergensAndProductLists(user)
                     updateProfileImage(user)
 
                 } else {
@@ -167,9 +169,10 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    private fun updateUserAllergens(user: FirebaseUser?) {
+    private fun updateUserAllergensAndProductLists(user: FirebaseUser?) {
 
-        val listViewModel = AllergenListViewModel(application)
+        val allergenListViewModel = AllergenListViewModel(application)
+        val productListViewModel = ListsViewModel(application)
 
         val db = Firebase.firestore
         val docRef = db.collection("users").document(user?.uid.toString())
@@ -179,13 +182,20 @@ class LoginActivity : AppCompatActivity() {
                     val data = document.data
 
                     // Store data in Room database
-                    val allergenList = parseAllergenJson(data?.get("allergen").toString())
-                    listViewModel.deleteAll()
-                    listViewModel.insertAll(allergenList)
+                    val allergenList: List<Allergen> = parseJson(data?.get("allergen").toString())
+                    allergenListViewModel.deleteAll()
+                    allergenListViewModel.insertAll(allergenList)
+
+                    val productList: List<Product> = parseJson(data?.get("product").toString())
+                    Log.e("DB fetch", "Product list: $productList")
+
+                    productListViewModel.deleteAll()
+                    productListViewModel.insertAll(productList)
 
                 } else {
                     Log.e("DB fetch", "No such document")
-                    listViewModel.deleteAll()
+                    allergenListViewModel.deleteAll()
+                    productListViewModel.deleteAll()
                 }
             }
             .addOnFailureListener { exception ->
@@ -193,12 +203,13 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    private fun parseAllergenJson(jsonData: String): List<Allergen> {
+    private inline fun <reified T> parseJson(jsonData: String): List<T> {
         val gson = Gson()
-        val listType = object : TypeToken<List<Allergen>>() {}.type
+        val listType = object : TypeToken<List<T>>() {}.type
         if (jsonData == "null") {
             return emptyList()
         }
+        Log.e("parseJson", jsonData)
         return gson.fromJson(jsonData, listType)
     }
 
@@ -289,7 +300,7 @@ class LoginActivity : AppCompatActivity() {
                     val user = auth.currentUser
                     updateUI(user)
 
-                    updateUserAllergens(user)
+                    updateUserAllergensAndProductLists(user)
                     updateProfileImage(user)
 
                 } else {

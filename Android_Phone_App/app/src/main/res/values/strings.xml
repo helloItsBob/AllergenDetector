@@ -64,4 +64,16 @@
     <string name="new_password_hint">New Password</string>
     <string name="confirm_new_password_hint">Confirm New Password</string>
     <string name="choose_from_gallery">Choose from Gallery…</string>
+    <string name="title_product">Add Product</string>
+    <string name="tag_format">#%1$s</string>
+    <string name="harmful_tab">Harmful</string>
+    <string name="harmless_tab">Harmless</string>
+    <string name="enter_product_name">Enter product name…</string>
+    <string name="possible_allergens">Possible allergens:</string>
+    <string name="tags">Tags:</string>
+    <string name="add_tag">Add</string>
+    <string name="add_a_tag">Add a tag…</string>
+    <string name="search_for_product">Search for product…</string>
+    <string name="view_edit_product">View/Edit Product</string>
+    <string name="ok_button">OK</string>
 </resources>
