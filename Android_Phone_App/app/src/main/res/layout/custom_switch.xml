@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="50dp"
+    android:layout_centerHorizontal="true"
+    android:layout_margin="20dp"
+    android:background="@drawable/bg_switch"
+    android:padding="2.5dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchHarmfulHarmless"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:checked="false"
+        android:enabled="true"
+        android:textColor="@color/white"
+        android:thumb="@drawable/thumb_selector"
+        app:switchMinWidth="360dp"
+        app:track="@drawable/track_selector" />
+
+    <LinearLayout
+        android:layout_width="360dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/switchHarmful"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/harmful_tab"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/switchHarmless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/harmless_tab"
+            android:textColor="@color/purple_500"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

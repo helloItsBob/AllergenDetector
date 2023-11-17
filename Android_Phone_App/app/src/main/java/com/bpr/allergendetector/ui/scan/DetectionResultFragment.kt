@@ -1,7 +1,6 @@
 package com.bpr.allergendetector.ui.scan
 
-import android.content.Context.VIBRATOR_MANAGER_SERVICE
-import android.content.Context.VIBRATOR_SERVICE
+import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -25,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bpr.allergendetector.MainActivity
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.FragmentDetectionResultBinding
+import com.bpr.allergendetector.ui.SwitchState
 import com.bpr.allergendetector.ui.UiText
 import com.bpr.allergendetector.ui.allergenlist.Allergen
 
@@ -41,6 +41,9 @@ class DetectionResultFragment : Fragment() {
 
     // create a media player for the sound
     private lateinit var mediaPlayer: MediaPlayer
+
+    private var hasVibrated = false
+    private lateinit var vibrator: VibratorManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,11 +89,18 @@ class DetectionResultFragment : Fragment() {
         }
 
         binding.saveButton.setOnClickListener {
-            Toast.makeText(
-                requireContext(),
-                "Not yet implemented",
-                Toast.LENGTH_SHORT
-            ).show()
+            var state = SwitchState.HARMLESS_STATE
+            if (detectedAllergens.isNotEmpty()) {
+                state = SwitchState.HARMFUL_STATE
+            }
+
+            val action =
+                DetectionResultFragmentDirections.actionNavigationDetectionResultToNavigationProduct(
+                    resultPicture,
+                    state,
+                    resultText
+                )
+            findNavController().navigate(action)
         }
 
         binding.returnButton.setOnClickListener {
@@ -127,23 +137,28 @@ class DetectionResultFragment : Fragment() {
             recyclerView.adapter = adapter
 
             // vibrate
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val vibrator: VibratorManager =
-                    requireContext().getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
-                val timings: LongArray = longArrayOf(300, 200, 100)
-                val amplitudes: IntArray = intArrayOf(90, 200, 160)
-                val repeatIndex = -1 // Do not repeat.
-                vibrator.defaultVibrator.vibrate(
-                    VibrationEffect.createWaveform(
-                        timings,
-                        amplitudes,
-                        repeatIndex
+            if (!hasVibrated) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    vibrator =
+                        requireContext().getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                    val timings: LongArray = longArrayOf(300, 200, 100)
+                    val amplitudes: IntArray = intArrayOf(90, 200, 160)
+                    val repeatIndex = -1 // Do not repeat.
+                    vibrator.defaultVibrator.vibrate(
+                        VibrationEffect.createWaveform(
+                            timings,
+                            amplitudes,
+                            repeatIndex
+                        )
                     )
-                )
-            } else {
-                // if version is less than S, use deprecated method
-                val vibrator = activity?.getSystemService(VIBRATOR_SERVICE) as Vibrator?
-                vibrator!!.vibrate(longArrayOf(300, 200, 100), -1)
+                    hasVibrated = true
+
+                } else {
+                    // if version is less than S, use deprecated method
+                    val vibrator = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+                    vibrator!!.vibrate(longArrayOf(300, 200, 100), -1)
+                    hasVibrated = true
+                }
             }
 
             // make a sound
@@ -152,8 +167,8 @@ class DetectionResultFragment : Fragment() {
                     requireContext(),
                     R.raw.siren
                 )
+                mediaPlayer.start()
             }
-            mediaPlayer.start()
 
 
         } else {
@@ -173,17 +188,21 @@ class DetectionResultFragment : Fragment() {
                     requireContext(),
                     R.raw.success
                 )
+                mediaPlayer.start()
             }
-            mediaPlayer.start()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        if (this::mediaPlayer.isInitialized) {
-            mediaPlayer.stop()
-            mediaPlayer.release()
+        try {
+            if (this::mediaPlayer.isInitialized) {
+                mediaPlayer.stop()
+                mediaPlayer.release()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

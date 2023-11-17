@@ -46,7 +46,6 @@ class EditTextViewModel : ViewModel() {
             .setNegativeButton("No") { dialog: DialogInterface, _ ->
                 dialog.dismiss()
                 // open keyboard
-                editTextView.setSelection(string.length - 1)
                 val imm =
                     fragment.requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(editTextView, InputMethodManager.SHOW_IMPLICIT)
