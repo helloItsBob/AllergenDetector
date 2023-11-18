@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bpr.allergendetector.LoginActivity
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.FragmentSettingsBinding
 import com.bpr.allergendetector.ui.AvatarUtil
@@ -33,6 +35,7 @@ import com.bpr.allergendetector.ui.UiText
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import java.io.ByteArrayOutputStream
@@ -176,7 +179,10 @@ class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener
                     val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
 
                     // save avatar base64 string to shared preferences for immediate use
-                    val sharedPreferences = requireActivity().getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
+                    val sharedPreferences = requireActivity().getSharedPreferences(
+                        "my_preferences",
+                        Context.MODE_PRIVATE
+                    )
                     val editor = sharedPreferences.edit()
                     editor.putString("avatar", base64Image)
                     editor.apply()
@@ -261,6 +267,59 @@ class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener
 
             UiText.StringResource(R.string.delete_account_button).asString(context) -> {
                 Log.e("SettingsFragment", "$buttonName clicked")
+
+                val dialogView = layoutInflater.inflate(R.layout.delete_account_modal, null)
+                val dialogBuilder = AlertDialog.Builder(requireContext()).setView(dialogView)
+                val alertDialog = dialogBuilder.create()
+
+                val description = dialogView.findViewById<TextView>(R.id.deleteAccountDescription)
+                val password = dialogView.findViewById<EditText>(R.id.deleteAccountPassword)
+                val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
+                val confirmButton = dialogView.findViewById<Button>(R.id.confirmButton)
+
+                val user = FirebaseAuth.getInstance().currentUser
+                val providerId = user?.providerData?.get(1)?.providerId
+                if (providerId == GoogleAuthProvider.PROVIDER_ID) {
+                    description.text =
+                        getString(R.string.are_you_sure_you_want_to_delete_your_account)
+                    password.visibility = View.GONE
+                }
+
+                cancelButton.setOnClickListener {
+                    alertDialog.cancel()
+                }
+
+                confirmButton.setOnClickListener {
+                    val passwordStr = password.text.toString()
+                    if (providerId != GoogleAuthProvider.PROVIDER_ID && passwordStr.isEmpty()) {
+                        Toast.makeText(
+                            context,
+                            "Password cannot be empty",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@setOnClickListener
+                    }
+
+                    settingsViewModel.deleteUserAccount(requireContext(), passwordStr)
+                    settingsViewModel.accountHasBeenDeleted.observe(viewLifecycleOwner) { isDeleted ->
+                        if (isDeleted) {
+                            alertDialog.dismiss()
+
+                            // navigate to login activity
+                            val loginIntent = Intent(requireContext(), LoginActivity::class.java)
+                            startActivity(loginIntent)
+                            requireActivity().finish()
+
+                            Toast.makeText(
+                                context,
+                                "Account has been successfully deleted.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+
+                alertDialog.show()
             }
 
             else -> {

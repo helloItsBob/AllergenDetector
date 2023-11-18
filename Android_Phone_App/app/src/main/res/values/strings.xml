@@ -76,4 +76,8 @@
     <string name="search_for_product">Search for product…</string>
     <string name="view_edit_product">View/Edit Product</string>
     <string name="ok_button">OK</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="type_in_your_password_to_confirm_account_deletion">Type in your password to confirm account deletion.</string>
+    <string name="are_you_sure_you_want_to_delete_your_account">Are you sure you want to delete your account?</string>
 </resources>
