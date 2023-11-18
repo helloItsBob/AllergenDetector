@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "162491987415-tm5d10kr879uu0tlncjqbg6du2vnmboc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bpr.allergendetector",
+            "certificate_hash": "e3784acbe54f8c7c41fb7f42ec3932b16107050b"
+          }
+        },
+        {
           "client_id": "162491987415-b63fn6i995hl11s0f70860mgkinivlvm.apps.googleusercontent.com",
           "client_type": 3
         }

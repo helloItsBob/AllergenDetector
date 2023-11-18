@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="16dp"
+    android:elevation="8dp"
+    android:orientation="vertical"
+    android:padding="32dp">
+
+    <TextView
+        android:id="@+id/deleteAccountTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:background="@color/purple_500"
+        android:elevation="15dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/delete_account"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/deleteAccountDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="8dp"
+        android:text="@string/type_in_your_password_to_confirm_account_deletion"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/deleteAccountPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="8dp"
+        android:hint="@string/password"
+        android:inputType="textPassword" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="@string/cancel_button" />
+
+        <Button
+            android:id="@+id/confirmButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="@string/confirm_button" />
+    </LinearLayout>
+
+</LinearLayout>

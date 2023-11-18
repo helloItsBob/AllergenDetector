@@ -10,8 +10,12 @@ import androidx.lifecycle.ViewModel
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.ui.UiText
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+
 
 class SettingsViewModel : ViewModel() {
 
@@ -131,6 +135,79 @@ class SettingsViewModel : ViewModel() {
                 } else {
                     Log.e("RE-AUTHENTICATE", "Re-authentication failed: ${result.exception}")
                     Toast.makeText(context, "Wrong current password", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    val accountHasBeenDeleted = MutableLiveData<Boolean>()
+
+    fun deleteUserAccount(context: Context, password: String = "") {
+        val user = FirebaseAuth.getInstance().currentUser
+        val providerId = user?.providerData?.get(1)?.providerId
+
+        val credential = if (user != null && providerId == GoogleAuthProvider.PROVIDER_ID) {
+            // retrieve token from shared preferences
+            val sharedPreferences =
+                context.getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
+            val idToken = sharedPreferences.getString("idToken", "No token found")
+
+            GoogleAuthProvider.getCredential(idToken, null)
+
+        } else {
+            val email = user?.email.toString()
+            EmailAuthProvider.getCredential(email, password)
+        }
+
+        Log.e("DELETE_ACCOUNT", "User: $credential")
+
+        // reAuthenticate the user
+        user?.reauthenticate(credential)
+            ?.addOnCompleteListener { reAuthentication ->
+                if (reAuthentication.isSuccessful) {
+
+                    user.delete()
+                        .addOnCompleteListener { deleteTask ->
+                            if (deleteTask.isSuccessful) {
+
+                                accountHasBeenDeleted.value = true
+
+                                // delete associated data from fireStore
+                                val db = FirebaseFirestore.getInstance()
+                                db.collection("users").document(user.uid).delete()
+                                    .addOnSuccessListener {
+                                        Log.e(
+                                            "DELETE_ACCOUNT",
+                                            "User data deleted."
+                                        )
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.e(
+                                            "DELETE_ACCOUNT",
+                                            "Error deleting user data: $e"
+                                        )
+                                    }
+
+                                FirebaseAuth.getInstance().signOut()
+
+                                Log.e("DELETE_ACCOUNT", "User account deleted.")
+                            } else {
+                                Log.e(
+                                    "DELETE_ACCOUNT",
+                                    "Error deleting user account: ${deleteTask.exception?.message}"
+                                )
+                            }
+                        }
+                } else {
+                    Log.e(
+                        "DELETE_ACCOUNT",
+                        "Error re-authenticating user: ${reAuthentication.exception?.message}"
+                    )
+                    Toast.makeText(
+                        context,
+                        "Provided password or token is incorrect",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
                 }
             }
     }

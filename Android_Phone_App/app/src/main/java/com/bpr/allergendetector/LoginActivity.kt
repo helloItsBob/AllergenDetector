@@ -261,6 +261,13 @@ class LoginActivity : AppCompatActivity() {
                         idToken != null -> {
                             Log.d(TAG, "Got ID token.")
                             firebaseAuthWithGoogle(idToken)
+
+                            // store idToken in shared preferences
+                            val sharedPreferences =
+                                getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
+                            val editor = sharedPreferences.edit()
+                            editor.putString("idToken", idToken)
+                            editor.apply()
                         }
 
                         else -> {
