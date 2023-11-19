@@ -1,6 +1,8 @@
 package com.bpr.allergendetector.ui.lists
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +30,7 @@ import com.bpr.allergendetector.ui.SwitchState
 import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import java.util.Locale
 
 class ListsFragment : Fragment(), ListRecyclerViewAdapter.ButtonClickListener {
 
@@ -41,6 +44,8 @@ class ListsFragment : Fragment(), ListRecyclerViewAdapter.ButtonClickListener {
 
     private val args: ListsFragmentArgs by navArgs()
     private lateinit var state: String
+
+    private lateinit var productList: List<Product>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -98,13 +103,47 @@ class ListsFragment : Fragment(), ListRecyclerViewAdapter.ButtonClickListener {
             }
         }
 
-        // TODO: implement share button
         binding.shareButton.setOnClickListener {
-            Toast.makeText(
-                requireContext(),
-                "Not yet implemented",
-                Toast.LENGTH_SHORT
-            ).show()
+
+            listsViewModel.allProducts.observe(viewLifecycleOwner) { productList ->
+                this.productList = if (state == SwitchState.HARMFUL_STATE)
+                    productList.filter { it.harmful }
+                else
+                    productList.filter { !it.harmful }
+            }
+
+            Log.e("ListsFragment", "productList: $productList")
+
+            // calculate the max length of the allergen name
+            val maxNameLength = productList.maxByOrNull { it.name.length }?.name?.length ?: 0
+
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Hi, here's my list of $state products:\n")
+            intent.putExtra(
+                Intent.EXTRA_TEXT, productList.joinToString(separator = "\n") {
+                    if (it.allergens?.isNotEmpty() == true) {
+                        val formattedName = "%-${maxNameLength}s".format(it.name.padEnd(10))
+                        "• Product : ${
+                            formattedName.replaceFirstChar { name ->
+                                if (name.isLowerCase()) name.titlecase(
+                                    Locale.getDefault()
+                                ) else name.toString()
+                            }
+                        } \nCategory : ${it.category}\nAllergens : ${it.allergens}\n"
+                    } else {
+                        val formattedName = "%-${maxNameLength}s".format(it.name.padEnd(10))
+                        "• Product : ${
+                            formattedName.replaceFirstChar { name ->
+                                if (name.isLowerCase()) name.titlecase(
+                                    Locale.getDefault()
+                                ) else name.toString()
+                            }
+                        } \nCategory : ${it.category}\n"
+                    }
+                }
+            )
+            startActivity(Intent.createChooser(intent, "Share $state Products"))
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {

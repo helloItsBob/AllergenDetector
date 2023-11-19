@@ -50,4 +50,13 @@ class AllergenListViewModel(application: Application) : AndroidViewModel(applica
         val navController = findNavController(fragment)
         navController.popBackStack()
     }
+
+    fun mapSeverityToString(severity: Int): String {
+        return when (severity) {
+            1 -> "Low Risk"
+            2 -> "Moderate Risk"
+            3 -> "High Risk"
+            else -> "Unknown"
+        }
+    }
 }
