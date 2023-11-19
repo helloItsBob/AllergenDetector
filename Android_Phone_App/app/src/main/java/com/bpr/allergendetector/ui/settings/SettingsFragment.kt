@@ -3,12 +3,10 @@ package com.bpr.allergendetector.ui.settings
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +29,7 @@ import com.bpr.allergendetector.LoginActivity
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.FragmentSettingsBinding
 import com.bpr.allergendetector.ui.AvatarUtil
+import com.bpr.allergendetector.ui.ImageConverter
 import com.bpr.allergendetector.ui.UiText
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -38,7 +37,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import java.io.ByteArrayOutputStream
 
 class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener {
 
@@ -172,11 +170,10 @@ class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener
                     // convert selected image to a Base64 string
                     val drawable = selectedAvatar?.drawable
                     val bitmap = (drawable as BitmapDrawable).bitmap
-
-                    val byteArrayOutputStream = ByteArrayOutputStream()
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-                    val byteArray = byteArrayOutputStream.toByteArray()
-                    val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                    val resizedBitmap = ImageConverter.resizeBitmap(bitmap, 200, 200)
+                    val compressedByteArray =
+                        ImageConverter.compressAndCovertBitmapToByteArray(resizedBitmap, 70)
+                    val base64Image = ImageConverter.convertByteArrayToBase64(compressedByteArray)
 
                     // save avatar base64 string to shared preferences for immediate use
                     val sharedPreferences = requireActivity().getSharedPreferences(
