@@ -1,6 +1,7 @@
 package com.bpr.allergendetector.ui.scan
 
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -11,7 +12,6 @@ import android.os.VibratorManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.ActionBar
 import androidx.core.content.ContextCompat
@@ -27,6 +27,7 @@ import com.bpr.allergendetector.databinding.FragmentDetectionResultBinding
 import com.bpr.allergendetector.ui.SwitchState
 import com.bpr.allergendetector.ui.UiText
 import com.bpr.allergendetector.ui.allergenlist.Allergen
+import java.util.Locale
 
 
 class DetectionResultFragment : Fragment() {
@@ -81,11 +82,48 @@ class DetectionResultFragment : Fragment() {
         }
 
         binding.shareButton.setOnClickListener {
-            Toast.makeText(
-                requireContext(),
-                "Not yet implemented",
-                Toast.LENGTH_SHORT
-            ).show()
+
+            var state = SwitchState.HARMLESS_STATE
+            if (detectedAllergens.isNotEmpty()) {
+                state = SwitchState.HARMFUL_STATE
+            }
+
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "image/*"
+
+            var shareText = "This product is $state for me.\n"
+            if (state != SwitchState.HARMLESS_STATE) {
+                shareText += "\nIt contains the following allergens:\n"
+            }
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareText)
+
+            // calculate the max length of the allergen name
+            val maxNameLength = detectedAllergens.maxByOrNull { it.name.length }?.name?.length ?: 0
+
+            shareIntent.putExtra(
+                Intent.EXTRA_TEXT, detectedAllergens.joinToString(separator = "\n") {
+                    val formattedName = "%-${maxNameLength}s".format(it.name.padEnd(10))
+                    "• ${
+                        formattedName.replaceFirstChar { name ->
+                            if (name.isLowerCase()) name.titlecase(
+                                Locale.getDefault()
+                            ) else name.toString()
+                        }
+                    }: ${
+                        when (it.severity) {
+                            1 -> "Low Risk"
+                            2 -> "Moderate Risk"
+                            3 -> "High Risk"
+                            else -> "Unknown"
+                        }
+                    }"
+                }
+            )
+
+            val fileUri = Uri.parse(resultPicture)
+            shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri)
+
+            startActivity(Intent.createChooser(shareIntent, "Share Detection Result"))
         }
 
         binding.saveButton.setOnClickListener {
