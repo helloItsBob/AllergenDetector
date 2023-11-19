@@ -1,5 +1,6 @@
 package com.bpr.allergendetector.ui.allergenlist
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,6 +21,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import java.util.Locale
+
 
 class AllergenListFragment : Fragment(), AllergenRecyclerViewAdapter.ButtonClickListener {
 
@@ -123,14 +126,28 @@ class AllergenListFragment : Fragment(), AllergenRecyclerViewAdapter.ButtonClick
             addDialog.show()
         }
 
-        //TODO: implement sharing of allergens
         val shareAllergensButton: FloatingActionButton = binding.floatingShareButton
         shareAllergensButton.setOnClickListener {
-            Toast.makeText(
-                shareAllergensButton.context,
-                "Share functionality is not implemented.",
-                Toast.LENGTH_SHORT
-            ).show()
+
+            // calculate the max length of the allergen name
+            val maxNameLength = allergenList.maxByOrNull { it.name.length }?.name?.length ?: 0
+
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Hi, here's my list of allergens:\n")
+            intent.putExtra(
+                Intent.EXTRA_TEXT, allergenList.joinToString(separator = "\n") {
+                    val formattedName = "%-${maxNameLength}s".format(it.name.padEnd(10))
+                    "• ${
+                        formattedName.replaceFirstChar { name ->
+                            if (name.isLowerCase()) name.titlecase(
+                                Locale.getDefault()
+                            ) else name.toString()
+                        }
+                    }: ${allergenListViewModel.mapSeverityToString(it.severity)}"
+                }
+            )
+            startActivity(Intent.createChooser(intent, "Share Allergens"))
         }
 
         return root
