@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.bpr.allergendetector.databinding.ActivityLoginBinding
 import com.bpr.allergendetector.ui.allergenlist.Allergen
 import com.bpr.allergendetector.ui.allergenlist.AllergenListViewModel
@@ -43,10 +44,15 @@ class LoginActivity : AppCompatActivity() {
     private val REQ_ONE_TAP = 2 // can be any Int
     private var showOneTapUI = true
 
+    private lateinit var logRegViewModel: LogRegViewModel
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        logRegViewModel =
+            ViewModelProvider(this)[LogRegViewModel::class.java]
 
         oneTapClient = Identity.getSignInClient(this)
         signUpRequest = BeginSignInRequest.builder()
@@ -79,7 +85,15 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.googleLogin.setOnClickListener {
-            signIn()
+            if (!logRegViewModel.isNetworkAvailable(this)) {
+                Toast.makeText(
+                    baseContext,
+                    "No internet connection.",
+                    Toast.LENGTH_SHORT,
+                ).show()
+            } else {
+                signIn()
+            }
         }
 
         // Make "Register" look like a button
@@ -122,6 +136,12 @@ class LoginActivity : AppCompatActivity() {
                     updateUserAllergensAndProductLists(user)
                     updateProfileImage(user)
 
+                } else if (!logRegViewModel.isNetworkAvailable(this)) {
+                    Toast.makeText(
+                        baseContext,
+                        "No internet connection.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)

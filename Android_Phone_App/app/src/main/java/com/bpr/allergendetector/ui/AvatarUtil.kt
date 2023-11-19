@@ -1,8 +1,6 @@
 package com.bpr.allergendetector.ui
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.util.Base64
 import android.util.Log
 import android.widget.ImageView
 import com.bumptech.glide.Glide
@@ -21,9 +19,7 @@ class AvatarUtil {
 
             if (encodedImage != null) {
                 // decode the Base64 string and display the image
-                val decodedBytes = Base64.decode(encodedImage, Base64.DEFAULT)
-                val decodedBitmap =
-                    BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                val decodedBitmap = ImageConverter.convertStringToBitmap(encodedImage)
 
                 Glide.with(context)
                     .load(decodedBitmap)

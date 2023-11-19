@@ -102,6 +102,15 @@ class SettingsViewModel : ViewModel() {
             return
         }
 
+        if (oldPasswordStr == newPass) {
+            Toast.makeText(
+                context,
+                "New password cannot be the same as old password",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
         val credential = EmailAuthProvider.getCredential(user.email!!, oldPasswordStr)
 
         user.reauthenticate(credential)
