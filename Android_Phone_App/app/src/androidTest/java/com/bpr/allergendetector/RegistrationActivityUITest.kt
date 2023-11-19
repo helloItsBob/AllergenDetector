@@ -2,14 +2,11 @@ package com.bpr.allergendetector
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.GrantPermissionRule
-import com.bpr.allergendetector.ui.profile.ProfileButtonAdapter
-import com.bpr.allergendetector.ui.settings.SettingsButtonAdapter
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -96,21 +93,14 @@ class RegistrationActivityUITest {
 
         waitALittle()
 
-        Espresso.onView(ViewMatchers.withId(R.id.profileButtonList)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<ProfileButtonAdapter.ButtonViewHolder>(
-                4,
-                ViewActions.click()
-            )
-        )
+        Espresso.onView(ViewMatchers.withText(R.string.profile_button_settings))
+            .perform(ViewActions.click())
 
         waitALittle()
 
-        Espresso.onView(ViewMatchers.withId(R.id.settingsButtons)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<SettingsButtonAdapter.CustomViewHolder>(
-                4,
-                ViewActions.click()
-            )
-        )
+        //select delete account from settings
+        Espresso.onView(ViewMatchers.withText(R.string.delete_account_button))
+            .perform(ViewActions.click())
 
         //delete account
         Espresso.onView(ViewMatchers.withId(R.id.deleteAccountPassword))

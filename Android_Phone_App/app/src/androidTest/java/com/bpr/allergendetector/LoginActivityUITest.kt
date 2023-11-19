@@ -29,6 +29,7 @@ class LoginActivityUITest {
 
         waitALittle()
 
+        //enter bad email and password to fail login
         Espresso.onView(ViewMatchers.withId(R.id.editTextEmail))
             .perform(ViewActions.typeText(email), ViewActions.closeSoftKeyboard())
 
@@ -47,6 +48,7 @@ class LoginActivityUITest {
 
         waitALittle()
 
+        //enter email and password to login
         Espresso.onView(ViewMatchers.withId(R.id.editTextEmail))
             .perform(ViewActions.typeText(email), ViewActions.closeSoftKeyboard())
 
@@ -63,7 +65,7 @@ class LoginActivityUITest {
         Espresso.onView(ViewMatchers.withId(R.id.navigation_profile))
             .perform(ViewActions.click())
 
-        //click button #3 from profileButtonList
+        //logout
         Espresso.onView(ViewMatchers.withId(R.id.logoutButton))
             .perform(ViewActions.click())
 
