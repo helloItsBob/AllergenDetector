@@ -13,7 +13,7 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class LoginActivityTest {
+class LoginActivityUITest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(LoginActivity::class.java)
@@ -27,6 +27,8 @@ class LoginActivityTest {
         val email = "asd"
         val password = "dsa"
 
+        waitALittle()
+
         Espresso.onView(ViewMatchers.withId(R.id.editTextEmail))
             .perform(ViewActions.typeText(email), ViewActions.closeSoftKeyboard())
 
@@ -36,13 +38,15 @@ class LoginActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.buttonLogin))
             .perform(ViewActions.click())
 
-        Thread.sleep(1000)
+        waitALittle()
     }
     @Test
     fun loginLogoutTest() {
         val email = "test@gmail.com"
         val password = "test123"
 
+        waitALittle()
+
         Espresso.onView(ViewMatchers.withId(R.id.editTextEmail))
             .perform(ViewActions.typeText(email), ViewActions.closeSoftKeyboard())
 
@@ -52,8 +56,8 @@ class LoginActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.buttonLogin))
             .perform(ViewActions.click())
 
-        //can get internal error in Cloud Firestore here, reason unknown
-        Thread.sleep(1000) //need to wait for profile to load
+        //need to wait for profile to load
+        waitALittle()
 
         //go to profile page
         Espresso.onView(ViewMatchers.withId(R.id.navigation_profile))
@@ -63,7 +67,11 @@ class LoginActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.logoutButton))
             .perform(ViewActions.click())
 
-        Thread.sleep(100)
+        waitALittle()
+    }
+
+    private fun waitALittle() {
+        Thread.sleep(1000)
     }
 
 }

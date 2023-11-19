@@ -1,3 +1,5 @@
+package com.bpr.allergendetector
+
 import android.content.Context
 import com.bpr.allergendetector.ui.UiText
 import org.junit.Assert.assertEquals
