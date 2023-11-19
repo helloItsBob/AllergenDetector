@@ -14,14 +14,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-private val timeForVisibility = Thread.sleep(1000)
-
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class AllergenListUITest {
 
     @get:Rule
-    val fragmentRule = ActivityScenarioRule(MainActivity::class.java)
+    val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
     @get:Rule
     val grantPermissionRule: GrantPermissionRule =
@@ -46,78 +44,91 @@ class AllergenListUITest {
     fun addAllergenTest() {
         val allergen = "test allergen"
 
+        //press add button
         Espresso.onView(ViewMatchers.withId(R.id.floatingAddButton))
             .perform(ViewActions.click())
 
+        //enter allergen name
         Espresso.onView(ViewMatchers.withId(R.id.allergenName))
             .perform(ViewActions.typeText(allergen), ViewActions.closeSoftKeyboard())
 
-        timeForVisibility
+        waitALittle()
 
-        //pick 2 at severity from seekBar
+        //swipe on severity bar
         Espresso.onView(ViewMatchers.withId(R.id.severitySeekBar))
             .perform(ViewActions.swipeRight())
 
-        timeForVisibility
+        waitALittle()
 
         //press ok
         Espresso.onView(ViewMatchers.withText("Ok"))
             .perform(ViewActions.click())
 
-        timeForVisibility
+        waitALittle()
     }
 
     @Test
     fun addedAllergenEditTest() {
         val allergen = "another test allergen"
 
+        //press edit button
         Espresso.onView(ViewMatchers.withId(R.id.allergen_edit))
             .perform(ViewActions.click())
 
-        timeForVisibility
+        waitALittle()
 
+        //enter allergen name
         Espresso.onView(ViewMatchers.withId(R.id.allergenName))
             .perform(ViewActions.replaceText(allergen), ViewActions.closeSoftKeyboard())
 
-        timeForVisibility
+        waitALittle()
 
+        //cancel edit to see if allergen name is still the same afterwards
         Espresso.onView(ViewMatchers.withText("Cancel"))
             .perform(ViewActions.click())
 
+        //press edit button again
         Espresso.onView(ViewMatchers.withId(R.id.allergen_edit))
             .perform(ViewActions.click())
 
+        //enter allergen name
         Espresso.onView(ViewMatchers.withId(R.id.allergenName))
             .perform(ViewActions.replaceText(allergen), ViewActions.closeSoftKeyboard())
 
-        timeForVisibility
+        waitALittle()
 
-        //pick 2 at severity from seekBar
+        //swipe on severity bar to the left
         Espresso.onView(ViewMatchers.withId(R.id.severitySeekBar))
             .perform(ViewActions.slowSwipeLeft())
 
-        timeForVisibility
+        waitALittle()
 
+        //apply changes
         Espresso.onView(ViewMatchers.withText("Ok"))
             .perform(ViewActions.click())
 
-        timeForVisibility
+        waitALittle()
     }
 
     @Test
     fun removeAllergenTest() {
-        timeForVisibility
+        waitALittle()
 
+        //press delete button
         Espresso.onView(ViewMatchers.withId(R.id.allergen_delete))
             .perform(ViewActions.click())
 
-        timeForVisibility
+        waitALittle()
 
+        //confirm delete
         Espresso.onView(ViewMatchers.withText("Yes"))
             .perform(ViewActions.click())
 
-        timeForVisibility
+        waitALittle()
     }
 
+    private fun waitALittle() {
+        Thread.sleep(1000)
+    }
 
 }
