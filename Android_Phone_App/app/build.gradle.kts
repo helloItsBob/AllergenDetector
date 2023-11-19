@@ -57,8 +57,11 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore:24.9.1")
     //Testing
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
     // Mockito
     testImplementation("org.mockito:mockito-core:3.11.2")
+    testImplementation("org.mockito:mockito-inline:2.13.0")
 
     // AndroidJUnitRunner and JUnit Rules
     androidTestImplementation("androidx.test:runner:1.5.2")
@@ -67,9 +70,13 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     // Espresso dependencies
     androidTestImplementation( "androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation( "androidx.test.espresso:espresso-contrib:3.5.1")
+    androidTestImplementation( "androidx.test.espresso:espresso-contrib:3.5.1"){
+        exclude(module = "protobuf-lite")
+    }
     androidTestImplementation( "androidx.test.espresso:espresso-intents:3.5.1")
-    androidTestImplementation( "androidx.test.espresso:espresso-accessibility:3.5.1")
+    androidTestImplementation( "androidx.test.espresso:espresso-accessibility:3.5.1"){
+        exclude(module = "protobuf-lite")
+    }
     androidTestImplementation( "androidx.test.espresso:espresso-web:3.5.1")
     androidTestImplementation( "androidx.test.espresso.idling:idling-concurrent:3.5.1")
     androidTestImplementation( "androidx.test.espresso:espresso-idling-resource:3.5.1")
