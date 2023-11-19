@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.bpr.allergendetector.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -20,10 +21,14 @@ class RegistrationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
     private lateinit var auth: FirebaseAuth
 
+    private lateinit var logRegViewModel: LogRegViewModel
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        logRegViewModel = ViewModelProvider(this)[LogRegViewModel::class.java]
 
         auth = Firebase.auth
         Log.e(LoginActivity.TAG, "auth: $auth")
@@ -90,14 +95,28 @@ class RegistrationActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     }
+                } else if (!logRegViewModel.isNetworkAvailable(this)) {
+                    Toast.makeText(
+                        baseContext,
+                        "No internet connection",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(LoginActivity.TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(
-                        baseContext,
-                        "Registration failed, please try again",
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    if (task.exception?.message == "The email address is already in use by another account.") {
+                        Toast.makeText(
+                            baseContext,
+                            "Account with provided email exists.",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            baseContext,
+                            "Registration failed, please try again",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    }
                 }
             }
     }
