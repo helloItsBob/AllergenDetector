@@ -24,6 +24,9 @@
         <action
             android:id="@+id/action_navigation_scan_to_navigation_photo"
             app:destination="@id/navigation_photo" />
+        <action
+            android:id="@+id/action_navigation_scan_to_navigation_recent_scans"
+            app:destination="@id/navigation_recent_scans" />
     </fragment>
 
     <fragment
@@ -132,5 +135,11 @@
             android:id="@+id/action_navigation_product_to_navigation_lists"
             app:destination="@id/navigation_lists" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_recent_scans"
+        android:name="com.bpr.allergendetector.ui.recentscans.RecentScansFragment"
+        android:label="@string/recent_scans_title"
+        tools:layout="@layout/fragment_recent_scans" />
 
 </navigation>
