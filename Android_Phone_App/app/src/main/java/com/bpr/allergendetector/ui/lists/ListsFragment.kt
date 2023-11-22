@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -57,26 +58,6 @@ class ListsFragment : Fragment(), ListRecyclerViewAdapter.ButtonClickListener {
         _binding = FragmentListsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // TODO: implement search functionality
-        binding.searchButton.setOnClickListener {
-            val searchString = binding.searchString.text.trim().toString()
-            if (searchString.isNotEmpty()) {
-
-                Toast.makeText(
-                    requireContext(),
-                    "Searching for \"$searchString\"",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-            } else Toast.makeText(
-                requireContext(),
-                "Search field is empty",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            binding.searchString.text.clear()
-        }
-
         // init adapter for the RecyclerView
         val adapter = ListRecyclerViewAdapter(ArrayList())
         val recyclerView: RecyclerView = binding.productList
@@ -99,8 +80,39 @@ class ListsFragment : Fragment(), ListRecyclerViewAdapter.ButtonClickListener {
             switchBinding.switchHarmfulHarmless.setOnCheckedChangeListener { _, checked ->
                 state = if (checked) SwitchState.HARMLESS_STATE else SwitchState.HARMFUL_STATE
                 SwitchState.updateSwitchUI(switchBinding, requireContext(), state)
-                adapter.updateData(state, productList)
+                val query = binding.searchString.query.toString()
+                if (query.isNotEmpty()) {
+                    adapter.searchFilter(query, productList, state)
+                } else {
+                    adapter.updateData(state, productList)
+                }
             }
+
+
+            // set the search functionality
+            binding.searchString.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+                override fun onQueryTextSubmit(query: String?): Boolean {
+
+                    val searchString = query?.trim().toString()
+                    if (searchString.isNotEmpty()) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Searched for \"$searchString\"",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    binding.searchString.clearFocus()
+
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    adapter.searchFilter(newText.orEmpty(), productList, state)
+                    return true
+                }
+            })
         }
 
         binding.shareButton.setOnClickListener {
@@ -156,6 +168,11 @@ class ListsFragment : Fragment(), ListRecyclerViewAdapter.ButtonClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.searchString.setQuery(null, false)
     }
 
     override fun onViewEditButtonClick(product: Product) {

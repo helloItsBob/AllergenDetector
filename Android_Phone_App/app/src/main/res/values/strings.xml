@@ -73,7 +73,7 @@
     <string name="tags">Tags:</string>
     <string name="add_tag">Add</string>
     <string name="add_a_tag">Add a tag…</string>
-    <string name="search_for_product">Search for product…</string>
+    <string name="search_for_product">Search by name or a tag…</string>
     <string name="view_edit_product">View/Edit Product</string>
     <string name="ok_button">OK</string>
     <string name="delete_account">Delete Account</string>

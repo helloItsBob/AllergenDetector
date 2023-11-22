@@ -12,6 +12,7 @@ import com.bpr.allergendetector.ui.ImageConverter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import java.util.Locale
 
 class ListRecyclerViewAdapter(
     private var values: ArrayList<Product>
@@ -88,5 +89,14 @@ class ListRecyclerViewAdapter(
         }
         values = filteredList
         notifyDataSetChanged()
+    }
+
+    fun searchFilter(query: String, originalList: List<Product>, state: String) {
+        val filteredList = originalList.filter { item ->
+            item.name.lowercase(Locale.ROOT).contains(query.lowercase(Locale.ROOT)) ||
+            item.tags?.lowercase(Locale.ROOT)?.contains(query.lowercase(Locale.ROOT))!!
+        }
+
+        updateData(state, filteredList)
     }
 }
