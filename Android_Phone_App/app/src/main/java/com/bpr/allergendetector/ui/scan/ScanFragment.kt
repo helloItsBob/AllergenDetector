@@ -100,6 +100,11 @@ class ScanFragment : Fragment() {
             galleryLauncher?.launch(galleryIntent)
         }
 
+        binding.recentScanButton.setOnClickListener {
+            val action = ScanFragmentDirections.actionNavigationScanToNavigationRecentScans()
+            findNavController().navigate(action)
+        }
+
         return root
     }
 

@@ -80,4 +80,5 @@
     <string name="confirm_button">Confirm</string>
     <string name="type_in_your_password_to_confirm_account_deletion">Type in your password to confirm account deletion.</string>
     <string name="are_you_sure_you_want_to_delete_your_account">Are you sure you want to delete your account?</string>
+    <string name="recent_scans_title">Recent Scans</string>
 </resources>

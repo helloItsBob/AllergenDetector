@@ -2,6 +2,7 @@ package com.bpr.allergendetector.ui.scan
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -24,9 +25,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bpr.allergendetector.MainActivity
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.FragmentDetectionResultBinding
+import com.bpr.allergendetector.ui.ImageConverter
 import com.bpr.allergendetector.ui.SwitchState
 import com.bpr.allergendetector.ui.UiText
 import com.bpr.allergendetector.ui.allergenlist.Allergen
+import com.bpr.allergendetector.ui.recentscans.RecentScan
 import java.util.Locale
 
 
@@ -79,6 +82,24 @@ class DetectionResultFragment : Fragment() {
 
             // display the result
             displayDetectionResult(detectedAllergens)
+
+
+            // convert picture to base64 string
+            val drawable = binding.imageView.drawable
+            val bitmap = (drawable as BitmapDrawable).bitmap
+            val resizedBitmap = ImageConverter.resizeBitmap(bitmap, 200, 200)
+            val compressedByteArray =
+                ImageConverter.compressAndCovertBitmapToByteArray(resizedBitmap, 70)
+            val base64Image = ImageConverter.convertByteArrayToBase64(compressedByteArray)
+
+            // save scan to recent scans
+            val recentScan = RecentScan(
+                0,
+                base64Image,
+                if (detectedAllergens.isNotEmpty()) SwitchState.HARMFUL_STATE else SwitchState.HARMLESS_STATE,
+                detectedAllergens
+            )
+            detectionResultViewModel.insert(recentScan)
         }
 
         binding.shareButton.setOnClickListener {
