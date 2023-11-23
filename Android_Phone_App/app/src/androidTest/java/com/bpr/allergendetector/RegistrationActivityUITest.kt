@@ -1,8 +1,12 @@
 package com.bpr.allergendetector
 
+import android.util.Log
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -86,6 +90,16 @@ class RegistrationActivityUITest {
             .perform(ViewActions.click())
 
         waitALittle()//need to wait for profile to load
+
+        // press stay safe button if it exists
+        try {
+            Espresso.onView(ViewMatchers.withId(R.id.staySafeButton)).check(matches(isDisplayed()))
+                .perform(ViewActions.click())
+        } catch (e: NoMatchingViewException) {
+            Log.d("Test", "Button with ID R.id.staySafeButton not found. Skipping this step.")
+        }
+
+        waitALittle()
 
         //go to -> profile -> settings
         Espresso.onView(ViewMatchers.withId(R.id.navigation_profile))

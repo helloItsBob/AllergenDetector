@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -12,6 +13,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -105,7 +107,43 @@ class ScanFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        binding.showHintButton.setOnClickListener {
+            val sharedPreferences =
+                context?.getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
+            val editor = sharedPreferences?.edit()
+            editor?.remove("FIRST_LOGIN")
+            editor?.apply()
+
+            val action = ScanFragmentDirections.actionNavigationScanToNavigationGuidelines()
+            findNavController().navigate(action)
+        }
+
+        // check if the user enabled 'hide hints' in settings
+        val sharedPreferences =
+            context?.getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
+        val hideHints = sharedPreferences?.getBoolean("HIDE_HINTS", false)
+        if (hideHints == true) {
+            binding.showHintButton.visibility = View.GONE
+        } else {
+            binding.showHintButton.visibility = View.VISIBLE
+        }
+
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // key listener for the back button
+        view.isFocusableInTouchMode = true
+        view.requestFocus()
+        view.setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+                requireActivity().finish()
+                return@setOnKeyListener true
+            }
+            return@setOnKeyListener false
+        }
     }
 
     private fun takePhoto() {

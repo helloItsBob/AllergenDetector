@@ -16,4 +16,8 @@
         android:icon="@drawable/baseline_profile_circle_24"
         android:title="@string/title_profile" />
 
+    <item
+        android:id="@+id/navigation_guidelines"
+        android:title="@string/guidelines_title" />
+
 </menu>

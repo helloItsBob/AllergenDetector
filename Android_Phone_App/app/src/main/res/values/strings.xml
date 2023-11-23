@@ -73,7 +73,7 @@
     <string name="tags">Tags:</string>
     <string name="add_tag">Add</string>
     <string name="add_a_tag">Add a tag…</string>
-    <string name="search_for_product">Search by name or a tag…</string>
+    <string name="search_for_product">Search name/tag/category…</string>
     <string name="view_edit_product">View/Edit Product</string>
     <string name="ok_button">OK</string>
     <string name="delete_account">Delete Account</string>
@@ -81,4 +81,13 @@
     <string name="type_in_your_password_to_confirm_account_deletion">Type in your password to confirm account deletion.</string>
     <string name="are_you_sure_you_want_to_delete_your_account">Are you sure you want to delete your account?</string>
     <string name="recent_scans_title">Recent Scans</string>
+    <string name="guidelines_title">Guidelines</string>
+    <string name="welcome_to_allergen_detector">Welcome to Allergen Detector!</string>
+    <string name="guideline_1">1. Add allergens to your profile</string>
+    <string name="guideline_2">2. Scan a product</string>
+    <string name="guideline_3">3. View your personalized list of products and search for something you can eat without a doubt</string>
+    <string name="stay_safe_button">Stay Safe!</string>
+    <string name="_3">3</string>
+    <string name="_2">2</string>
+    <string name="_1">1</string>
 </resources>
