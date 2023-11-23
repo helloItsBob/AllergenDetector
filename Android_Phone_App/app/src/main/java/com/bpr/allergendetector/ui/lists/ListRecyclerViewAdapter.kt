@@ -94,7 +94,9 @@ class ListRecyclerViewAdapter(
     fun searchFilter(query: String, originalList: List<Product>, state: String) {
         val filteredList = originalList.filter { item ->
             item.name.lowercase(Locale.ROOT).contains(query.lowercase(Locale.ROOT)) ||
-            item.tags?.lowercase(Locale.ROOT)?.contains(query.lowercase(Locale.ROOT))!!
+                    item.tags?.lowercase(Locale.ROOT)
+                        ?.contains(query.lowercase(Locale.ROOT)) == true ||
+                    item.category.lowercase(Locale.ROOT).contains(query.lowercase(Locale.ROOT))
         }
 
         updateData(state, filteredList)
