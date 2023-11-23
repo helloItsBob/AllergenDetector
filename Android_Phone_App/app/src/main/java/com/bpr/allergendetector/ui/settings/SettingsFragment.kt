@@ -74,17 +74,27 @@ class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener
         recyclerView.adapter = buttonAdapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
+        // check whether 'hide hints' is on or off
+        val sharedPreferences = requireActivity().getSharedPreferences(
+            "my_preferences",
+            Context.MODE_PRIVATE
+        )
+        val hideHints = sharedPreferences.getBoolean("HIDE_HINTS", false)
+        binding.hideHintsSwitch.isChecked = hideHints
 
-        binding.hideHintsSwitch.setOnClickListener {
-            Toast.makeText(
-                context,
-                "Hide hints switch triggered",
-                Toast.LENGTH_SHORT
-            ).show()
+        binding.hideHintsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val editor = sharedPreferences.edit()
+
+            if (isChecked) {
+                editor.putBoolean("HIDE_HINTS", true)
+            } else {
+                editor.putBoolean("HIDE_HINTS", false)
+            }
+            editor.apply()
         }
 
         // TODO: Implement proper switch handling
-        binding.darkModeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // dark mode on
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)

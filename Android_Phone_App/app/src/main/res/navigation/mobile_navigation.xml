@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_scan">
+    app:startDestination="@+id/navigation_guidelines">
 
     <fragment
         android:id="@+id/navigation_lists"
@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_navigation_scan_to_navigation_recent_scans"
             app:destination="@id/navigation_recent_scans" />
+        <action
+            android:id="@+id/action_navigation_scan_to_navigation_guidelines"
+            app:destination="@id/navigation_guidelines" />
     </fragment>
 
     <fragment
@@ -141,5 +144,15 @@
         android:name="com.bpr.allergendetector.ui.recentscans.RecentScansFragment"
         android:label="@string/recent_scans_title"
         tools:layout="@layout/fragment_recent_scans" />
+
+    <fragment
+        android:id="@+id/navigation_guidelines"
+        android:name="com.bpr.allergendetector.GuidelinesFragment"
+        android:label="@string/guidelines_title"
+        tools:layout="@layout/fragment_guidelines" >
+        <action
+            android:id="@+id/action_navigation_guidelines_to_navigation_scan"
+            app:destination="@id/navigation_scan" />
+    </fragment>
 
 </navigation>

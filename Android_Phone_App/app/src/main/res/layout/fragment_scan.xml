@@ -24,6 +24,18 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
+        android:id="@+id/showHintButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/rounded_corners"
+        android:drawableTop="@drawable/baseline_question_mark_24"
+        android:layout_marginTop="80dp"
+        android:elevation="2dp"
+        app:layout_constraintEnd_toStartOf="@+id/recentScanButton"
+        app:layout_constraintStart_toEndOf="@+id/openGalleryButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/openGalleryButton"
         android:layout_width="150dp"
         android:layout_height="50dp"
