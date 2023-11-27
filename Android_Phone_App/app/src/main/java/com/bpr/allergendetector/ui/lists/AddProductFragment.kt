@@ -1,12 +1,15 @@
 package com.bpr.allergendetector.ui.lists
 
+import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
+import androidx.camera.view.PreviewView
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,9 +20,12 @@ import com.bpr.allergendetector.MainActivity
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.CustomSwitchBinding
 import com.bpr.allergendetector.databinding.FragmentProductBinding
+import com.bpr.allergendetector.ui.CameraUtil
 import com.bpr.allergendetector.ui.ImageConverter
 import com.bpr.allergendetector.ui.SwitchState
 import com.google.android.material.chip.Chip
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class AddProductFragment : Fragment() {
 
@@ -30,6 +36,9 @@ class AddProductFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val args: AddProductFragmentArgs by navArgs()
+
+//    private var imageCapture: ImageCapture? = null
+    private lateinit var cameraExecutor: ExecutorService
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -84,6 +93,34 @@ class AddProductFragment : Fragment() {
 
                 binding.allergenChipGroup.addView(chip)
             }
+        }
+
+        binding.captureButton.setOnClickListener {
+            // inflate scan fragment
+            val dialog = Dialog(requireContext())
+            dialog.setContentView(R.layout.fragment_scan)
+
+            // hide buttons
+            val openGalleryButton = dialog.findViewById<Button>(R.id.openGalleryButton)
+            val recentScansButton = dialog.findViewById<Button>(R.id.recentScanButton)
+            val hintButton = dialog.findViewById<Button>(R.id.showHintButton)
+            openGalleryButton.visibility = View.GONE
+            recentScansButton.visibility = View.GONE
+            hintButton.visibility = View.GONE
+
+            // start camera
+            val viewFinder = dialog.findViewById<PreviewView>(R.id.viewFinder)
+            CameraUtil.startCamera(viewFinder, requireContext(), viewLifecycleOwner)
+
+            val imageCaptureButton = dialog.findViewById<Button>(R.id.image_capture_button)
+            imageCaptureButton.setOnClickListener {
+                CameraUtil.takePhoto(requireContext(), this, binding.imageView)
+                cameraExecutor = Executors.newSingleThreadExecutor()
+
+                dialog.dismiss()
+            }
+
+            dialog.show()
         }
 
         binding.addTagChip.setOnClickListener {
@@ -167,5 +204,8 @@ class AddProductFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        if (this::cameraExecutor.isInitialized) {
+            cameraExecutor.shutdown()
+        }
     }
 }
