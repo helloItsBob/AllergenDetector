@@ -90,4 +90,7 @@
     <string name="_3">3</string>
     <string name="_2">2</string>
     <string name="_1">1</string>
+    <string name="title_statistics">Statistics</string>
+    <string name="total_scans">Scans Made:</string>
+    <string name="week_year">Week\t\t\t\t\t\t\t\t\t\tYear</string>
 </resources>
