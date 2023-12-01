@@ -101,11 +101,11 @@ dependencies {
     implementation("com.vanniktech:android-image-cropper:4.5.0")
 
     // Firebase dependencies
-    implementation("com.google.firebase:firebase-auth:22.2.0")
+    implementation("com.google.firebase:firebase-auth:22.3.0")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
     // Room dependencies
-    val roomVersion = "2.6.0"
+    val roomVersion = "2.6.1"
     implementation("androidx.room:room-ktx:$roomVersion")
     //noinspection KaptUsageInsteadOfKsp
     kapt("androidx.room:room-compiler:$roomVersion")
@@ -115,7 +115,7 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
 
     // Gson
-    implementation("com.google.code.gson:gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.10")
 
     // Graph
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
