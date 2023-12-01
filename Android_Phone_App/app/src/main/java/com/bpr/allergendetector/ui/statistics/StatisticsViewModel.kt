@@ -3,6 +3,7 @@ package com.bpr.allergendetector.ui.statistics
 import android.app.Application
 import android.graphics.Color
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
@@ -15,6 +16,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -26,6 +28,18 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
         ScanCounterRepo(ScanCounterDB.getInstance(application).scanCounterDAO())
 
     val allScanCounters = scanCounterRepo.getAllScanCounters()
+
+    fun insertAll(scanCounters: List<ScanCounter>) {
+        viewModelScope.launch {
+            scanCounterRepo.insertAll(scanCounters)
+        }
+    }
+
+    fun deleteAll() {
+        viewModelScope.launch {
+            scanCounterRepo.deleteAll()
+        }
+    }
 
     fun setupBarChart(
         barChart: BarChart,

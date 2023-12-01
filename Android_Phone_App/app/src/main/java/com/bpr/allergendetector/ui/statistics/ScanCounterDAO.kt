@@ -17,4 +17,10 @@ interface ScanCounterDAO {
     // get a list of liveData for all scan counters
     @Query("SELECT * FROM scan_counter_table")
     fun getAllScanCounters(): LiveData<List<ScanCounter>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(scanCounters: List<ScanCounter>)
+
+    @Query("DELETE FROM scan_counter_table")
+    suspend fun deleteAll()
 }

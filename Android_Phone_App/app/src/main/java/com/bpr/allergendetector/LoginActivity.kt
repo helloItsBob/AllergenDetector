@@ -20,6 +20,8 @@ import com.bpr.allergendetector.ui.lists.ListsViewModel
 import com.bpr.allergendetector.ui.lists.Product
 import com.bpr.allergendetector.ui.recentscans.RecentScan
 import com.bpr.allergendetector.ui.recentscans.RecentScansViewModel
+import com.bpr.allergendetector.ui.statistics.ScanCounter
+import com.bpr.allergendetector.ui.statistics.StatisticsViewModel
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -196,6 +198,7 @@ class LoginActivity : AppCompatActivity() {
         val allergenListViewModel = AllergenListViewModel(application)
         val productListViewModel = ListsViewModel(application)
         val recentScansViewModel = RecentScansViewModel(application)
+        val statisticsViewModel = StatisticsViewModel(application)
 
         val db = Firebase.firestore
         val docRef = db.collection("users").document(user?.uid.toString())
@@ -220,11 +223,17 @@ class LoginActivity : AppCompatActivity() {
                     recentScansViewModel.deleteAll()
                     recentScansViewModel.insertAll(recentScans)
 
+                    val scanCounters: List<ScanCounter> =
+                        parseJson(data?.get("scanCounter").toString())
+                    statisticsViewModel.deleteAll()
+                    statisticsViewModel.insertAll(scanCounters)
+
                 } else {
                     Log.e("DB fetch", "No such document")
                     allergenListViewModel.deleteAll()
                     productListViewModel.deleteAll()
                     recentScansViewModel.deleteAll()
+                    statisticsViewModel.deleteAll()
                 }
             }
             .addOnFailureListener { exception ->

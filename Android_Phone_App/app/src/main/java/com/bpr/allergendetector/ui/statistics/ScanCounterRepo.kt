@@ -17,4 +17,12 @@ class ScanCounterRepo(private val scanCounterDAO: ScanCounterDAO) {
     suspend fun getDailyScanCount(date: String): ScanCounter? {
         return scanCounterDAO.getDailyScanCount(date)
     }
+
+    suspend fun insertAll(scanCounters: List<ScanCounter>) {
+        scanCounterDAO.insertAll(scanCounters)
+    }
+
+    suspend fun deleteAll() {
+        scanCounterDAO.deleteAll()
+    }
 }
