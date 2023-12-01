@@ -80,6 +80,9 @@ class RegistrationActivity : AppCompatActivity() {
 
         binding.textViewLogin.text = spannableString
         binding.textViewLogin.movementMethod = LinkMovementMethod.getInstance()
+
+        // night mode
+        DarkMode.setDarkModeBasedOnPrefs(this)
     }
 
 

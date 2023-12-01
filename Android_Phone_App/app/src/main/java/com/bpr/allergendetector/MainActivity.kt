@@ -36,5 +36,8 @@ class MainActivity : AppCompatActivity() {
         // Hide guidelines menu item
         val menuItem: MenuItem = navView.menu.findItem(R.id.navigation_guidelines)
         menuItem.isVisible = false
+
+        // night mode
+        DarkMode.setDarkModeBasedOnPrefs(this)
     }
 }

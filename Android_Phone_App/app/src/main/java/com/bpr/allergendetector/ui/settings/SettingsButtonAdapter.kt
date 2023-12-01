@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bpr.allergendetector.R
 
@@ -42,11 +41,6 @@ class SettingsButtonAdapter(
             if (buttonClickListener != null) {
                 buttonClickListener!!.onButtonClicked(buttonName)
             }
-            Toast.makeText(
-                holder.button.context,
-                "$buttonName button clicked",
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 
