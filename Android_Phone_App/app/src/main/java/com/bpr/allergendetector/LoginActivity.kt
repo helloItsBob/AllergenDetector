@@ -118,6 +118,9 @@ class LoginActivity : AppCompatActivity() {
 
         binding.textViewRegister.text = spannableString
         binding.textViewRegister.movementMethod = LinkMovementMethod.getInstance()
+
+        // night mode
+        DarkMode.setDarkModeBasedOnPrefs(this)
     }
 
     public override fun onStart() {

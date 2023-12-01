@@ -27,7 +27,6 @@ class SettingsViewModel : ViewModel() {
         return if (isSignedInWithGoogle) {
             listOf(
                 UiText.StringResource(R.string.change_avatar_button),
-                UiText.StringResource(R.string.change_language_button),
                 UiText.StringResource(R.string.feedback_button),
                 UiText.StringResource(R.string.delete_account_button)
             )
@@ -35,7 +34,6 @@ class SettingsViewModel : ViewModel() {
             listOf(
                 UiText.StringResource(R.string.change_avatar_button),
                 UiText.StringResource(R.string.change_password_button),
-                UiText.StringResource(R.string.change_language_button),
                 UiText.StringResource(R.string.feedback_button),
                 UiText.StringResource(R.string.delete_account_button)
             )

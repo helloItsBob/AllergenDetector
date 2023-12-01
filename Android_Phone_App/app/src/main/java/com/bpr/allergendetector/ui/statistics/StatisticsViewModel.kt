@@ -1,10 +1,12 @@
 package com.bpr.allergendetector.ui.statistics
 
 import android.app.Application
+import android.content.Context
 import android.graphics.Color
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
@@ -106,6 +108,8 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
             highlightToday(barChart)
         }
 
+        adjustToDarkMode(barChart)
+
         barChart.invalidate()
     }
 
@@ -197,6 +201,8 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
 
         lineChart.axisRight.granularity = 1f
         lineChart.axisRight.axisMinimum = 0f
+
+        adjustToDarkMode(lineChart)
 
         lineChart.invalidate()
     }
@@ -293,5 +299,29 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
         }
 
         return datesOfWeek
+    }
+
+    private fun adjustToDarkMode(chart: Chart<*>) {
+        // check if dark mode is enabled
+        val sharedPreferences =
+            getApplication<Application>().getSharedPreferences(
+                "my_preferences",
+                Context.MODE_PRIVATE
+            )
+        val nightMode = sharedPreferences.getBoolean("DARK_MODE", false)
+
+        if (nightMode) {
+            chart.xAxis.textColor = Color.WHITE
+            chart.data.setValueTextColor(Color.WHITE)
+            chart.legend.textColor = Color.WHITE
+
+            if (chart is BarChart) {
+                chart.axisLeft.textColor = Color.WHITE
+                chart.axisRight.textColor = Color.WHITE
+            } else if (chart is LineChart) {
+                chart.axisLeft.textColor = Color.WHITE
+                chart.axisRight.textColor = Color.WHITE
+            }
+        }
     }
 }

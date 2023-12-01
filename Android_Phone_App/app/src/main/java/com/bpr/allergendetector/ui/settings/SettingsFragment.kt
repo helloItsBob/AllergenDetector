@@ -93,23 +93,37 @@ class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener
             editor.apply()
         }
 
-        // TODO: Implement proper switch handling
+        // dark mode based on user prefs
+        val darkMode = sharedPreferences.getBoolean("DARK_MODE", false)
+        binding.darkModeSwitch.isChecked = darkMode
+
         binding.darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val editor = sharedPreferences.edit()
+
             if (isChecked) {
                 // dark mode on
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                editor.putBoolean("DARK_MODE", true)
             } else {
                 // dark mode off
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                editor.putBoolean("DARK_MODE", false)
             }
+            editor.apply()
         }
 
         binding.aboutButton.setOnClickListener {
-            Toast.makeText(
-                context,
-                "About button clicked",
-                Toast.LENGTH_SHORT
-            ).show()
+
+            val dialogView = layoutInflater.inflate(R.layout.about_modal, null)
+            val dialogBuilder = AlertDialog.Builder(requireContext()).setView(dialogView)
+            val alertDialog = dialogBuilder.create()
+
+            val okButton = dialogView.findViewById<Button>(R.id.okButton)
+            okButton.setOnClickListener {
+                alertDialog.dismiss()
+            }
+
+            alertDialog.show()
         }
 
         // on change avatar button click
@@ -145,7 +159,6 @@ class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener
         _binding = null
     }
 
-    // TODO: Add the rest of onClickListeners here
     override fun onButtonClicked(buttonName: String) {
         when (buttonName) {
             UiText.StringResource(R.string.change_avatar_button).asString(context) -> {
@@ -264,12 +277,20 @@ class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener
                 alertDialog.show()
             }
 
-            UiText.StringResource(R.string.change_language_button).asString(context) -> {
-                Log.e("SettingsFragment", "$buttonName clicked")
-            }
-
             UiText.StringResource(R.string.feedback_button).asString(context) -> {
                 Log.e("SettingsFragment", "$buttonName clicked")
+
+                val recipients = arrayOf("abistrovs3@gmail.com", "mx.fokins@gmail.com")
+                val subject = "AllergenDetector Feedback"
+                val message = "Hello,\n\nI would like to provide the following feedback:\n"
+
+                val emailIntent = Intent(Intent.ACTION_SENDTO)
+                emailIntent.setData(Uri.parse("mailto:"))
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, recipients)
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject)
+                emailIntent.putExtra(Intent.EXTRA_TEXT, message)
+
+                startActivity(emailIntent)
             }
 
             UiText.StringResource(R.string.delete_account_button).asString(context) -> {

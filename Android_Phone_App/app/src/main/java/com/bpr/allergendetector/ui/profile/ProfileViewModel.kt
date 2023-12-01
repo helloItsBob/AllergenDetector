@@ -19,8 +19,6 @@ class ProfileViewModel : ViewModel() {
         value = listOf(
             UiText.StringResource(R.string.profile_button_allergens),
             UiText.StringResource(R.string.profile_button_statistics),
-            UiText.StringResource(R.string.profile_button_metrics),
-            UiText.StringResource(R.string.profile_button_educational_tips),
             UiText.StringResource(R.string.profile_button_settings)
         )
     }
