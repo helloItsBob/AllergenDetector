@@ -100,6 +100,7 @@ class DetectionResultFragment : Fragment() {
                 detectedAllergens
             )
             detectionResultViewModel.insert(recentScan)
+            detectionResultViewModel.trackDailyCount(if (detectedAllergens.isNotEmpty()) 1 else 0)
         }
 
         binding.shareButton.setOnClickListener {

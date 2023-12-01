@@ -42,6 +42,11 @@ class ProfileButtonAdapter(
                     navController.navigate(R.id.navigation_settings)
                 }
 
+                UiText.StringResource(R.string.profile_button_statistics)
+                    .asString(holder.button.context) -> {
+                    navController.navigate(R.id.navigation_statistics)
+                }
+
                 else -> {
                     Toast.makeText(
                         holder.button.context,
