@@ -93,6 +93,21 @@ class SettingsFragment : Fragment(), SettingsButtonAdapter.OnButtonClickListener
             editor.apply()
         }
 
+        // text to speech based on user prefs
+        val textToSpeech = sharedPreferences.getBoolean("TEXT_TO_SPEECH", false)
+        binding.textToSpeechSwitch.isChecked = textToSpeech
+
+        binding.textToSpeechSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val editor = sharedPreferences.edit()
+
+            if (isChecked) {
+                editor.putBoolean("TEXT_TO_SPEECH", true)
+            } else {
+                editor.putBoolean("TEXT_TO_SPEECH", false)
+            }
+            editor.apply()
+        }
+
         // dark mode based on user prefs
         val darkMode = sharedPreferences.getBoolean("DARK_MODE", false)
         binding.darkModeSwitch.isChecked = darkMode

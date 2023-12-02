@@ -20,6 +20,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,8 +33,11 @@ import com.bpr.allergendetector.ui.SwitchState
 import com.bpr.allergendetector.ui.UiText
 import com.bpr.allergendetector.ui.allergenlist.Allergen
 import com.bpr.allergendetector.ui.recentscans.RecentScan
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
-
+import kotlin.properties.Delegates
 
 class DetectionResultFragment : Fragment(), TextToSpeech.OnInitListener {
 
@@ -52,6 +56,10 @@ class DetectionResultFragment : Fragment(), TextToSpeech.OnInitListener {
     private lateinit var vibrator: VibratorManager
 
     private var textToSpeech: TextToSpeech? = null
+    private var isTextToSpeechInitialized = false
+
+    // shared preferences
+    private var isTextToSpeechEnabled by Delegates.notNull<Boolean>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,6 +74,15 @@ class DetectionResultFragment : Fragment(), TextToSpeech.OnInitListener {
 
         // text to speech init
         textToSpeech = TextToSpeech(requireContext(), this)
+
+        // check if user has enabled text to speech
+        val sharedPref = context?.getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
+        isTextToSpeechEnabled = sharedPref?.getBoolean("TEXT_TO_SPEECH", false) == true
+        if (isTextToSpeechEnabled) {
+            binding.textToSpeechButton.visibility = View.VISIBLE
+        } else {
+            binding.textToSpeechButton.visibility = View.GONE
+        }
 
         // Hide back button in the action bar
         val actionBar: ActionBar? = (activity as MainActivity?)?.supportActionBar
@@ -238,13 +255,17 @@ class DetectionResultFragment : Fragment(), TextToSpeech.OnInitListener {
             }
 
             // convert text to speech
-            val readString = "Attention, have found following " + binding.textResult.text.toString()
+            val readString = "Have found following " + binding.textResult.text.toString()
             var readAllergens = ""
             for (allergen in detectedAllergens) {
                 readAllergens += allergen.name + ", "
             }
-            convertTextToSpeech(readString)
-            convertTextToSpeech(readAllergens)
+            textToSpeechResult(readString, readAllergens)
+
+            // repeat text to speech on button click
+            binding.textToSpeechButton.setOnClickListener {
+                textToSpeechResult(readString, readAllergens)
+            }
 
         } else {
             binding.textResult.text =
@@ -268,7 +289,26 @@ class DetectionResultFragment : Fragment(), TextToSpeech.OnInitListener {
             }
 
             // convert text to speech
-            convertTextToSpeech(binding.textResult.text.toString())
+            val readString = binding.textResult.text.toString()
+            textToSpeechResult(readString, null)
+
+            // repeat text to speech on button click
+            binding.textToSpeechButton.setOnClickListener {
+                textToSpeechResult(readString, null)
+            }
+        }
+    }
+
+    private fun textToSpeechResult(readString: String, readAllergens: String?) {
+        if (isTextToSpeechEnabled) {
+            lifecycleScope.launch {
+                awaitTextToSpeechInitialization()
+                if (readAllergens != null) {
+                    convertTextToSpeech("Attention!")
+                }
+                convertTextToSpeech(readString)
+                convertTextToSpeech(readAllergens ?: "")
+            }
         }
     }
 
@@ -289,21 +329,35 @@ class DetectionResultFragment : Fragment(), TextToSpeech.OnInitListener {
     }
 
     override fun onInit(status: Int) {
-        if (status == TextToSpeech.SUCCESS) {
+        isTextToSpeechInitialized = if (status == TextToSpeech.SUCCESS) {
             val langResult = textToSpeech?.setLanguage(Locale.US)
             if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "Language is not supported or missing data")
             } else {
                 Log.i("TTS", "TextToSpeech engine initialized successfully")
             }
+            true
+
         } else {
             Log.e("TTS", "TextToSpeech initialization failed")
+            false
+        }
+    }
+
+    private suspend fun awaitTextToSpeechInitialization() {
+        withContext(Dispatchers.Main) {
+            while (!isTextToSpeechInitialized) {
+                // suspend until TTS is initialized
+                kotlinx.coroutines.delay(100)
+            }
         }
     }
 
     private fun convertTextToSpeech(text: String) {
-        if (textToSpeech != null) {
+        if (isTextToSpeechInitialized) {
             textToSpeech?.speak(text, TextToSpeech.QUEUE_ADD, null, null)
+        } else {
+            Log.e("TTS", "TextToSpeech not initialized")
         }
     }
 }
