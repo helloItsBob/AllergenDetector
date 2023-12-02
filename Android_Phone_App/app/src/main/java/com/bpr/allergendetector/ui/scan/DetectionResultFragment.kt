@@ -10,6 +10,8 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +35,7 @@ import com.bpr.allergendetector.ui.recentscans.RecentScan
 import java.util.Locale
 
 
-class DetectionResultFragment : Fragment() {
+class DetectionResultFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var _binding: FragmentDetectionResultBinding? = null
 
@@ -49,6 +51,8 @@ class DetectionResultFragment : Fragment() {
     private var hasVibrated = false
     private lateinit var vibrator: VibratorManager
 
+    private var textToSpeech: TextToSpeech? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -59,6 +63,9 @@ class DetectionResultFragment : Fragment() {
 
         _binding = FragmentDetectionResultBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        // text to speech init
+        textToSpeech = TextToSpeech(requireContext(), this)
 
         // Hide back button in the action bar
         val actionBar: ActionBar? = (activity as MainActivity?)?.supportActionBar
@@ -230,6 +237,14 @@ class DetectionResultFragment : Fragment() {
                 mediaPlayer.start()
             }
 
+            // convert text to speech
+            val readString = "Attention, have found following " + binding.textResult.text.toString()
+            var readAllergens = ""
+            for (allergen in detectedAllergens) {
+                readAllergens += allergen.name + ", "
+            }
+            convertTextToSpeech(readString)
+            convertTextToSpeech(readAllergens)
 
         } else {
             binding.textResult.text =
@@ -248,8 +263,12 @@ class DetectionResultFragment : Fragment() {
                     requireContext(),
                     R.raw.success
                 )
+                mediaPlayer.setVolume(0.2f, 0.2f)
                 mediaPlayer.start()
             }
+
+            // convert text to speech
+            convertTextToSpeech(binding.textResult.text.toString())
         }
     }
 
@@ -261,8 +280,30 @@ class DetectionResultFragment : Fragment() {
                 mediaPlayer.stop()
                 mediaPlayer.release()
             }
+            textToSpeech?.stop()
+            textToSpeech?.shutdown()
+
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            val langResult = textToSpeech?.setLanguage(Locale.US)
+            if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "Language is not supported or missing data")
+            } else {
+                Log.i("TTS", "TextToSpeech engine initialized successfully")
+            }
+        } else {
+            Log.e("TTS", "TextToSpeech initialization failed")
+        }
+    }
+
+    private fun convertTextToSpeech(text: String) {
+        if (textToSpeech != null) {
+            textToSpeech?.speak(text, TextToSpeech.QUEUE_ADD, null, null)
         }
     }
 }
