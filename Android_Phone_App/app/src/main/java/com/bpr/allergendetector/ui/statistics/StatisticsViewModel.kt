@@ -110,6 +110,8 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
 
         adjustToDarkMode(barChart)
 
+        barChart.isDoubleTapToZoomEnabled = false
+
         barChart.invalidate()
     }
 
@@ -203,6 +205,8 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
         lineChart.axisRight.axisMinimum = 0f
 
         adjustToDarkMode(lineChart)
+
+        lineChart.isDoubleTapToZoomEnabled = false
 
         lineChart.invalidate()
     }
