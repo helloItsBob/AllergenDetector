@@ -72,6 +72,8 @@ class ScanUITest {
         Espresso.onView(ViewMatchers.withText("Ok"))
             .perform(ViewActions.click())
 
+        waitALittle()
+
         //go back to scan page
         Espresso.onView(ViewMatchers.withId(R.id.goBackButton))
             .perform(ViewActions.click())
@@ -98,6 +100,12 @@ class ScanUITest {
         Espresso.onView(ViewMatchers.withId(R.id.buttonProceed))
             .perform(ViewActions.click())
         waitALittle()
+
+        //assert that allergens are detected and displayed
+        Espresso.onView(ViewMatchers.withText(allergen))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withText(anotherAllergen))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         //return to scan fragment
         Espresso.onView(ViewMatchers.withId(R.id.returnButton))
@@ -130,9 +138,17 @@ class ScanUITest {
 
         waitALittle()
 
+        //assert that mocked text is not displayed
+        Espresso.onView(ViewMatchers.withText(harmlessLabel))
+            .check(ViewAssertions.doesNotExist())
+
         //edit text
         Espresso.onView(ViewMatchers.withId(R.id.editTextView))
             .perform(ViewActions.replaceText(harmlessLabel), ViewActions.closeSoftKeyboard())
+
+        //assert that text is changed
+        Espresso.onView(ViewMatchers.withId(R.id.editTextView))
+            .check(ViewAssertions.matches(ViewMatchers.withText(harmlessLabel)))
 
         waitALittle()
 
@@ -175,9 +191,17 @@ class ScanUITest {
 
         waitALittle()
 
+        //assert that mocked text is not displayed
+        Espresso.onView(ViewMatchers.withText(harmlessLabel))
+            .check(ViewAssertions.doesNotExist())
+
         //edit text
         Espresso.onView(ViewMatchers.withId(R.id.editTextView))
             .perform(ViewActions.replaceText(harmlessLabel), ViewActions.closeSoftKeyboard())
+
+        //assert that text is changed
+        Espresso.onView(ViewMatchers.withId(R.id.editTextView))
+            .check(ViewAssertions.matches(ViewMatchers.withText(harmlessLabel)))
 
         waitALittle()
 
@@ -196,6 +220,12 @@ class ScanUITest {
             .perform(ViewActions.click())
         Espresso.onView(ViewMatchers.withText("Yes"))
             .perform(ViewActions.click())
+
+        waitALittle()
+
+        //assert that mocked text is not displayed after canceling edit
+        Espresso.onView(ViewMatchers.withText(harmlessLabel))
+            .check(ViewAssertions.doesNotExist())
 
         waitALittle()
     }
@@ -290,7 +320,12 @@ class ScanUITest {
 
         waitALittle()
 
-        //return to scan fragment
+        //assert that share button is displayed and clickable
+        Espresso.onView(ViewMatchers.withId(R.id.shareButton))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(ViewAssertions.matches(ViewMatchers.isClickable()))
+
+        //press share button
         Espresso.onView(ViewMatchers.withId(R.id.shareButton))
             .perform(ViewActions.click())
 

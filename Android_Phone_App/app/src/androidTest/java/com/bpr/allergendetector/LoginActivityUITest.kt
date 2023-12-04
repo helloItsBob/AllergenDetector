@@ -32,6 +32,9 @@ class LoginActivityUITest {
 
         waitALittle()
 
+        //assert that login fields and button are displayed
+        assertLoginFieldsAndButtonExist()
+
         //enter bad email and password to fail login
         Espresso.onView(ViewMatchers.withId(R.id.editTextEmail))
             .perform(ViewActions.typeText(email), ViewActions.closeSoftKeyboard())
@@ -42,14 +45,21 @@ class LoginActivityUITest {
         Espresso.onView(ViewMatchers.withId(R.id.buttonLogin))
             .perform(ViewActions.click())
 
+        //assert that login fields and button are still displayed
+        assertLoginFieldsAndButtonExist()
+
         waitALittle()
     }
+
     @Test
     fun loginLogoutTest() {
-        val email = "test@gmail.com"
+        val email = "logintest@gmail.com"
         val password = "test123"
 
         waitALittle()
+
+        //assert that login fields and button are displayed
+        assertLoginFieldsAndButtonExist()
 
         //enter email and password to login
         Espresso.onView(ViewMatchers.withId(R.id.editTextEmail))
@@ -66,6 +76,8 @@ class LoginActivityUITest {
 
         // press stay safe button if it exists
         try {
+            Espresso.onView(ViewMatchers.withId(R.id.guidelinesScrollView))
+                .perform(ViewActions.swipeUp())
             Espresso.onView(ViewMatchers.withId(R.id.staySafeButton)).check(
                 ViewAssertions.matches(
                     ViewMatchers.isDisplayed()
@@ -78,6 +90,14 @@ class LoginActivityUITest {
 
         waitALittle()
 
+        //assert that login fields and button are not displayed
+        Espresso.onView(ViewMatchers.withId(R.id.editTextEmail))
+            .check(ViewAssertions.doesNotExist())
+        Espresso.onView(ViewMatchers.withId(R.id.editTextPassword))
+            .check(ViewAssertions.doesNotExist())
+        Espresso.onView(ViewMatchers.withId(R.id.buttonLogin))
+            .check(ViewAssertions.doesNotExist())
+
         //go to profile page
         Espresso.onView(ViewMatchers.withId(R.id.navigation_profile))
             .perform(ViewActions.click())
@@ -89,8 +109,16 @@ class LoginActivityUITest {
         waitALittle()
     }
 
+    private fun assertLoginFieldsAndButtonExist() {
+        Espresso.onView(ViewMatchers.withId(R.id.editTextEmail))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.editTextPassword))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.buttonLogin))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+
     private fun waitALittle() {
         Thread.sleep(1000)
     }
-
 }

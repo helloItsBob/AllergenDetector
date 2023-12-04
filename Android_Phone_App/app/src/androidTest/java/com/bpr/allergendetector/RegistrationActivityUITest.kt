@@ -25,8 +25,10 @@ class RegistrationActivityUITest {
 
     @get:Rule
     val grantPermissionRule: GrantPermissionRule =
-        GrantPermissionRule.grant(android.Manifest.permission.CAMERA,
-            android.Manifest.permission.INTERNET)
+        GrantPermissionRule.grant(
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.INTERNET
+        )
 
     @Test
     fun failRegistrationTest() {
@@ -35,6 +37,9 @@ class RegistrationActivityUITest {
         val longPassword = "longpasswordtofail"
 
         waitALittle()
+
+        //assert that register fields and button are displayed
+        assertRegisterFieldsAndButtonExist()
 
         //password too short and bad email
         Espresso.onView(ViewMatchers.withId(R.id.editTextEmail))
@@ -50,8 +55,10 @@ class RegistrationActivityUITest {
             .perform(ViewActions.click())
 
         waitALittle()
+        assertRegisterFieldsAndButtonExist()
 
         //passwords don't match and bad email
+
         Espresso.onView(ViewMatchers.withId(R.id.editTextPassword))
             .perform(ViewActions.replaceText(longPassword), ViewActions.closeSoftKeyboard())
 
@@ -59,6 +66,7 @@ class RegistrationActivityUITest {
             .perform(ViewActions.click())
 
         waitALittle()
+        assertRegisterFieldsAndButtonExist()
 
         //bad email
         Espresso.onView(ViewMatchers.withId(R.id.editTextRepeatPassword))
@@ -68,13 +76,17 @@ class RegistrationActivityUITest {
             .perform(ViewActions.click())
 
         waitALittle()
+        assertRegisterFieldsAndButtonExist()
     }
+
     @Test
     fun registerAndDeleteAccountTest() {
         val email = "MockedTest@gmail.com"
         val password = "paSSword123!"
 
         waitALittle()
+        //assert that register fields and button are displayed
+        assertRegisterFieldsAndButtonExist()
 
         //register account
         Espresso.onView(ViewMatchers.withId(R.id.editTextEmail))
@@ -93,6 +105,8 @@ class RegistrationActivityUITest {
 
         // press stay safe button if it exists
         try {
+            Espresso.onView(ViewMatchers.withId(R.id.guidelinesScrollView))
+                .perform(ViewActions.swipeUp())
             Espresso.onView(ViewMatchers.withId(R.id.staySafeButton)).check(matches(isDisplayed()))
                 .perform(ViewActions.click())
         } catch (e: NoMatchingViewException) {
@@ -126,6 +140,17 @@ class RegistrationActivityUITest {
             .perform(ViewActions.click())
 
         waitALittle()
+    }
+
+    private fun assertRegisterFieldsAndButtonExist() {
+        Espresso.onView(ViewMatchers.withId(R.id.editTextEmail))
+            .check(matches(isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.editTextPassword))
+            .check(matches(isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.editTextRepeatPassword))
+            .check(matches(isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.buttonRegister))
+            .check(matches(isDisplayed()))
     }
 
     private fun waitALittle() {
