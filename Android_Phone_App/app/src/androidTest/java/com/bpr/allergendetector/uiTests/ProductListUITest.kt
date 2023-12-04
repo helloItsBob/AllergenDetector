@@ -1,4 +1,4 @@
-package com.bpr.allergendetector
+package com.bpr.allergendetector.uiTests
 
 import android.app.Activity.RESULT_OK
 import android.app.Instrumentation.ActivityResult
@@ -20,6 +20,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
+import com.bpr.allergendetector.MainActivity
+import com.bpr.allergendetector.R
 import com.bpr.allergendetector.ui.lists.ListRecyclerViewAdapter
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf

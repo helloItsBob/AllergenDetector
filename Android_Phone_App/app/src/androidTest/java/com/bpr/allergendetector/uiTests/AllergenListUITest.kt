@@ -1,4 +1,4 @@
-package com.bpr.allergendetector
+package com.bpr.allergendetector.uiTests
 
 import android.view.View
 import androidx.test.espresso.Espresso
@@ -12,6 +12,8 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.GrantPermissionRule
+import com.bpr.allergendetector.MainActivity
+import com.bpr.allergendetector.R
 import com.bpr.allergendetector.ui.allergenlist.AllergenRecyclerViewAdapter
 import org.hamcrest.Matcher
 import org.junit.Before
