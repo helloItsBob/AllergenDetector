@@ -13,7 +13,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <include layout="@layout/custom_switch" />
+        <include layout="@layout/custom_switch"
+            android:id="@+id/category_switch"/>
 
     </RelativeLayout>
 
