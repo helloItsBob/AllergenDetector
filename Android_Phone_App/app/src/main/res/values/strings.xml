@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AllergenDetector</string>
+    <string name="app_name">Allergen Detector</string>
     <string name="title_lists">Lists</string>
     <string name="title_scan">Scan</string>
     <string name="title_profile">Profile</string>

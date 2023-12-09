@@ -1,10 +1,12 @@
 package com.bpr.allergendetector.ui.recentscans
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,13 +24,15 @@ import com.bpr.allergendetector.databinding.FragmentRecentScansBinding
 import com.bpr.allergendetector.ui.ImageConverter
 import com.bpr.allergendetector.ui.SwitchState
 import com.bpr.allergendetector.ui.scan.DetectionResultAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import java.util.Locale
+import kotlin.properties.Delegates
 
 
-class RecentScansFragment : Fragment(), RecentScansAdapter.ButtonClickListener {
+class RecentScansFragment : Fragment(), RecentScansAdapter.ButtonClickListener, TextToSpeech.OnInitListener {
 
     private var _binding: FragmentRecentScansBinding? = null
 
@@ -39,6 +43,9 @@ class RecentScansFragment : Fragment(), RecentScansAdapter.ButtonClickListener {
     private lateinit var recentScansViewModel: RecentScansViewModel
 
     private lateinit var recentScanList: List<RecentScan>
+
+    private var textToSpeech: TextToSpeech? = null
+    private var isTextToSpeechInitialized = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,6 +87,8 @@ class RecentScansFragment : Fragment(), RecentScansAdapter.ButtonClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        textToSpeech?.stop()
+        textToSpeech?.shutdown()
     }
 
     override fun onStop() {
@@ -121,6 +130,22 @@ class RecentScansFragment : Fragment(), RecentScansAdapter.ButtonClickListener {
         val saveButton = dialog.findViewById<Button>(R.id.saveButton)
         saveButton.visibility = View.GONE
 
+        val textToSpeechButton = dialog.findViewById<FloatingActionButton>(R.id.textToSpeechButton)
+
+        // text to speech init
+        textToSpeech = TextToSpeech(requireContext(), this)
+
+        // shared preferences
+        var isTextToSpeechEnabled by Delegates.notNull<Boolean>()
+        val sharedPref = context?.getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
+        isTextToSpeechEnabled = sharedPref?.getBoolean("TEXT_TO_SPEECH", false) == true
+        if (isTextToSpeechEnabled) {
+            textToSpeechButton.visibility = View.VISIBLE
+        } else {
+            textToSpeechButton.visibility = View.GONE
+        }
+
+
         val returnButton = dialog.findViewById<Button>(R.id.returnButton)
 
         // convert the base64 string to a bitmap
@@ -133,8 +158,19 @@ class RecentScansFragment : Fragment(), RecentScansAdapter.ButtonClickListener {
         resultText.text = recentScan.result
         if (recentScan.result == SwitchState.HARMFUL_STATE) {
             resultText.setTextColor(resources.getColor(R.color.red))
+            // convert the text to speech
+            textToSpeechButton.setOnClickListener {
+                convertTextToSpeech("Attention! " + recentScan.result + ", contains: ")
+                recentScan.allergenList?.forEach { allergen ->
+                    convertTextToSpeech(allergen.name)
+                }
+            }
         } else {
             resultText.setTextColor(resources.getColor(R.color.green))
+            // convert the text to speech
+            textToSpeechButton.setOnClickListener {
+                convertTextToSpeech(recentScan.result)
+            }
         }
 
         // set the allergens
@@ -203,5 +239,29 @@ class RecentScansFragment : Fragment(), RecentScansAdapter.ButtonClickListener {
         }
 
         dialog.show()
+    }
+
+    override fun onInit(status: Int) {
+        isTextToSpeechInitialized = if (status == TextToSpeech.SUCCESS) {
+            val langResult = textToSpeech?.setLanguage(Locale.US)
+            if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "Language is not supported or missing data")
+            } else {
+                Log.i("TTS", "TextToSpeech engine initialized successfully")
+            }
+            true
+
+        } else {
+            Log.e("TTS", "TextToSpeech initialization failed")
+            false
+        }
+    }
+
+    private fun convertTextToSpeech(text: String) {
+        if (isTextToSpeechInitialized) {
+            textToSpeech?.speak(text, TextToSpeech.QUEUE_ADD, null, null)
+        } else {
+            Log.e("TTS", "TextToSpeech not initialized")
+        }
     }
 }

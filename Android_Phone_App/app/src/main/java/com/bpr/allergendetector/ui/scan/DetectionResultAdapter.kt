@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.HarmfulItemBinding
@@ -34,12 +35,26 @@ class DetectionResultAdapter(private val data: List<Allergen>) :
         val actualPosition = position + 1
         holder.allergenNumber.text = "$actualPosition"
         holder.allergenName.text = allergen.name
-        holder.allergenSeverity.setColorFilter(when (allergen.severity) {
-            1 -> Color.GREEN
-            2 -> Color.YELLOW
-            3 -> Color.RED
-            else -> Color.BLACK
-        })
+        holder.allergenSeverity.setColorFilter(
+            when (allergen.severity) {
+                1 -> ContextCompat.getColor(
+                    holder.allergenSeverity.context,
+                    R.color.yellow
+                )
+
+                2 -> ContextCompat.getColor(
+                    holder.allergenSeverity.context,
+                    R.color.orange
+                )
+
+                3 -> ContextCompat.getColor(
+                    holder.allergenSeverity.context,
+                    R.color.red
+                )
+
+                else -> Color.BLACK
+            }
+        )
     }
 
     override fun getItemCount(): Int {
