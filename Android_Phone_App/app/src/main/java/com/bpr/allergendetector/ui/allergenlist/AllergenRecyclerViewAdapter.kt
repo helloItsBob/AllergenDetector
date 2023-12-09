@@ -1,16 +1,16 @@
 package com.bpr.allergendetector.ui.allergenlist
 
 import android.graphics.Color
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.AddAllergenItemBinding
-
 import com.bpr.allergendetector.databinding.AllergenItemBinding
 import com.bpr.allergendetector.ui.UiText
 
@@ -39,17 +39,32 @@ class AllergenRecyclerViewAdapter(
         holder.contentView.text = item.name
         holder.severityView = when (item.severity) {
             1 -> {
-                holder.severityView.setColorFilter(Color.GREEN)
+                 holder.severityView.setColorFilter(
+                     ContextCompat.getColor(
+                         holder.severityView.context,
+                         R.color.yellow
+                     )
+                 )
                 holder.severityView
             }
 
             2 -> {
-                holder.severityView.setColorFilter(Color.YELLOW)
+                holder.severityView.setColorFilter(
+                    ContextCompat.getColor(
+                        holder.severityView.context,
+                        R.color.orange
+                    )
+                )
                 holder.severityView
             }
 
             3 -> {
-                holder.severityView.setColorFilter(Color.RED)
+                holder.severityView.setColorFilter(
+                    ContextCompat.getColor(
+                        holder.severityView.context,
+                        R.color.red
+                    )
+                )
                 holder.severityView
             }
 
