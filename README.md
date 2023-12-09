@@ -46,16 +46,20 @@ App enables its users to input their allergens and run the allergen detection lo
 
 ### Screenshots
 
+<p align="center">
    <img src="screenshots/guidelines_screen.jpg" alt="App Screenshot" height="250">
   <img src="screenshots/allergens_screen.jpg" alt="App Screenshot" height="250">
   <img src="screenshots/capture_screen.jpg" alt="App Screenshot" height="250">
   <img src="screenshots/crop_screen.jpg" alt="App Screenshot" height="250">
   <img src="screenshots/result_screen.jpg" alt="App Screenshot" height="250">
+</p>
+<p align="center">
   <img src="screenshots/save_screen.jpg" alt="App Screenshot" height="250">
   <img src="screenshots/product_list_screen.jpg" alt="App Screenshot" height="250">
   <img src="screenshots/edit_screen.jpg" alt="App Screenshot" height="250">
   <img src="screenshots/avatar_screen.jpg" alt="App Screenshot" height="250">
   <img src="screenshots/statistics_screen.jpg" alt="App Screenshot" height="250">
+</p>
 
 ---
 
