@@ -334,6 +334,69 @@ class ScanUITest {
         waitALittle()
     }
 
+    @Test
+    fun textToSpeechTest() {
+        //go to profile page -> settings
+        Espresso.onView(ViewMatchers.withId(R.id.navigation_profile))
+            .perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withText(R.string.profile_button_settings))
+            .perform(ViewActions.click())
+
+        //enable text to speech
+        Espresso.onView(ViewMatchers.withId(R.id.textToSpeechSwitch))
+            .perform(ViewActions.click())
+
+        //go back to scan page
+        Espresso.onView(ViewMatchers.withId(R.id.navigation_scan))
+            .perform(ViewActions.click())
+
+        //mock gallery intent response and pick image from gallery
+        intending(hasAction(Intent.ACTION_PICK))
+            .respondWith(galleryPickPhotoActivityResultStub())
+        Espresso.onView(ViewMatchers.withId(R.id.openGalleryButton))
+            .perform(ViewActions.click())
+
+        waitALittle()
+
+        //use image
+        Espresso.onView(ViewMatchers.withId(R.id.use_button))
+            .perform(ViewActions.click())
+
+        waitALittle()
+
+        //proceed without editing text
+        Espresso.onView(ViewMatchers.withId(R.id.buttonProceed))
+            .perform(ViewActions.click())
+        waitALittle()
+
+        //assert that text to speech button is displayed and clickable
+        Espresso.onView(ViewMatchers.withId(R.id.textToSpeechButton))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(ViewAssertions.matches(ViewMatchers.isClickable()))
+
+        //press text to speech button
+        Espresso.onView(ViewMatchers.withId(R.id.textToSpeechButton))
+            .perform(ViewActions.click())
+
+        waitALittle()
+
+        //return to scan fragment
+        Espresso.onView(ViewMatchers.withId(R.id.returnButton))
+            .perform(ViewActions.click())
+
+        waitALittle()
+
+        //go back to settings
+        Espresso.onView(ViewMatchers.withId(R.id.navigation_profile))
+            .perform(ViewActions.click())
+
+        //disable text to speech
+        Espresso.onView(ViewMatchers.withId(R.id.textToSpeechSwitch))
+            .perform(ViewActions.click())
+
+        waitALittle()
+    }
+
     private fun waitALittle() {
         Thread.sleep(1000)
     }
