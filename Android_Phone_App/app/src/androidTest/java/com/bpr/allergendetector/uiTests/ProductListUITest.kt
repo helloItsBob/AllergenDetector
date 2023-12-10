@@ -499,6 +499,48 @@ class ProductListUITest {
         Espresso.onView(ViewMatchers.withText(productAnotherName))
             .check(ViewAssertions.doesNotExist())
     }
+    @Test
+    fun testShareHarmfulFunctionality() {
+        //go to product list
+        Espresso.onView(ViewMatchers.withId(R.id.navigation_lists))
+            .perform(ViewActions.click())
+
+        waitALittle()
+
+        //assert that share button is displayed and clickable
+        Espresso.onView(ViewMatchers.withId(R.id.shareButton))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(ViewAssertions.matches(ViewMatchers.isClickable()))
+
+        //press share button
+        Espresso.onView(ViewMatchers.withId(R.id.shareButton))
+            .perform(ViewActions.click())
+
+        waitALittle()
+    }
+    @Test
+    fun testShareHarmlessFunctionality() {
+        //go to product list
+        Espresso.onView(ViewMatchers.withId(R.id.navigation_lists))
+            .perform(ViewActions.click())
+
+        waitALittle()
+
+        //switch to "harmless" tab
+        Espresso.onView(ViewMatchers.withId(R.id.category_switch))
+            .perform(ViewActions.click())
+
+        //assert that share button is displayed and clickable
+        Espresso.onView(ViewMatchers.withId(R.id.shareButton))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(ViewAssertions.matches(ViewMatchers.isClickable()))
+
+        //press share button
+        Espresso.onView(ViewMatchers.withId(R.id.shareButton))
+            .perform(ViewActions.click())
+
+        waitALittle()
+    }
 
     private fun productEditProcedure() {
         Espresso.onView(ViewMatchers.withId(R.id.productList))
