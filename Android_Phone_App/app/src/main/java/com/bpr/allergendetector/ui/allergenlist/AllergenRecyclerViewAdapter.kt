@@ -74,7 +74,7 @@ class AllergenRecyclerViewAdapter(
             }
         }
 
-        //Edit button implementation
+        // Edit button implementation
         holder.editButtonView.setOnClickListener {
             val allergenItem = values[position]
             val editItemBinding = AddAllergenItemBinding.inflate(
@@ -118,7 +118,7 @@ class AllergenRecyclerViewAdapter(
                 .show()
         }
 
-        //Remove button implementation
+        // Remove button implementation
         holder.deleteButtonView.setOnClickListener {
             AlertDialog.Builder(holder.deleteButtonView.context)
                 .setTitle("Remove ${item.name}?")

@@ -54,7 +54,7 @@ class AllergenListFragment : Fragment(), AllergenRecyclerViewAdapter.ButtonClick
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
-        // Observe the LiveData from your ViewModel
+        // Observe the LiveData from the ViewModel
         allergenListViewModel.allAllergens.observe(viewLifecycleOwner) { allergenList ->
             // Update the data in the adapter when LiveData changes
             adapter.updateData(allergenList)
@@ -77,7 +77,7 @@ class AllergenListFragment : Fragment(), AllergenRecyclerViewAdapter.ButtonClick
         val addAllergenButton: FloatingActionButton = binding.floatingAddButton
         addAllergenButton.setOnClickListener {
 
-            //assigning the layout to the dialog
+            // assigning the layout to the dialog
             var addItemBinding: AddAllergenItemBinding? = null
             addItemBinding = AddAllergenItemBinding.inflate(inflater, container, false)
             val allergenName = addItemBinding.allergenName
@@ -87,7 +87,7 @@ class AllergenListFragment : Fragment(), AllergenRecyclerViewAdapter.ButtonClick
 
             addDialog.setView(addItemBinding.root)
 
-            //setting "ok" and "cancel" buttons for the dialog
+            // setting "ok" and "cancel" buttons for the dialog
             addDialog.setPositiveButton("Ok") { dialog, _ ->
                 val name = allergenName.text.toString()
                 val severity = allergenSeverity.progress.toString()

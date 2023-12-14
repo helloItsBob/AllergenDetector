@@ -45,7 +45,7 @@ class PhotoFragment : Fragment() {
         val actionBar: ActionBar? = (activity as MainActivity?)?.supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(false)
 
-        // Load and display the image in an ImageView.
+        // Load and display the image in an CropImageView.
         var imagePath = args.image
         val capturedImage = binding.capturedImage
 
@@ -62,8 +62,6 @@ class PhotoFragment : Fragment() {
         }
 
         binding.useButton.setOnClickListener {
-            // TODO("Implement the logic to use the photo - crop it and send to ML model.")
-
             // ML Kit Text Recognition
             val image = photoViewModel.imageFromPath(requireContext(), Uri.parse(imagePath))
             val resultFuture = photoViewModel.performTextRecognition(image)

@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
-
 class StatisticsFragment : Fragment() {
 
     private var _binding: FragmentStatisticsBinding? = null

@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bpr.allergendetector.MainActivity
-import com.bpr.allergendetector.R
 import com.bpr.allergendetector.databinding.FragmentResultBinding
 
 class ResultFragment : Fragment() {

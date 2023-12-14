@@ -31,7 +31,6 @@ import com.google.firebase.firestore.SetOptions
 import java.util.Locale
 import kotlin.properties.Delegates
 
-
 class RecentScansFragment : Fragment(), RecentScansAdapter.ButtonClickListener, TextToSpeech.OnInitListener {
 
     private var _binding: FragmentRecentScansBinding? = null

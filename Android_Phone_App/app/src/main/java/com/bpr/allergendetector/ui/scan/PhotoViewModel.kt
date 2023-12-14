@@ -19,13 +19,12 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
-
 class PhotoViewModel : ViewModel() {
 
     // ML Kit Text Recognition
     private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
-    public fun imageFromPath(context: Context, uri: Uri): InputImage? {
+    fun imageFromPath(context: Context, uri: Uri): InputImage? {
         var image: InputImage? = null
         try {
             image = InputImage.fromFilePath(context, uri)
@@ -36,7 +35,7 @@ class PhotoViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    public fun performTextRecognition(image: InputImage?): CompletableFuture<String> {
+    fun performTextRecognition(image: InputImage?): CompletableFuture<String> {
         val future = CompletableFuture<String>()
 
         image?.let { img ->
@@ -67,10 +66,8 @@ class PhotoViewModel : ViewModel() {
             val result = contentResolver.delete(imageUri, null, null)
 
             if (result > 0) {
-                // Image deleted successfully
                 Log.d("ImageDeletion", "Image deleted: $imageUri")
             } else {
-                // Failed to delete the image
                 Log.d("ImageDeletion", "Failed to delete image: $imageUri")
             }
         } catch (e: Exception) {

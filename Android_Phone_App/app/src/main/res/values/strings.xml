@@ -94,4 +94,5 @@
     <string name="about_description"><![CDATA[We, the students of VIA University College - Aleksandrs Bistrovs & Maksims Fokins, have created this app as part of our final semester Bachelor project. The app is meant to provide the user with a possibility to scan ingredient labels of products and determine whether the user can or cannot eat this specific product based on their allergy profile. We hope you stay safe!]]></string>
     <string name="text_to_speech_switch">Text-to-Speech</string>
     <string name="text_to_speech_button">Text-to-speech button</string>
+    <string name="crop_description">View that allows to crop an image</string>
 </resources>

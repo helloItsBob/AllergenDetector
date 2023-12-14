@@ -26,7 +26,6 @@ class ProfileButtonAdapter(
         return ButtonViewHolder(view)
     }
 
-    //TODO: Add navigation for other buttons later
     override fun onBindViewHolder(holder: ButtonViewHolder, position: Int) {
         val buttonText = buttonData[position]
         holder.button.text = buttonText

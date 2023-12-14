@@ -37,7 +37,6 @@ class AddProductFragment : Fragment() {
 
     private val args: AddProductFragmentArgs by navArgs()
 
-//    private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
 
     override fun onCreateView(

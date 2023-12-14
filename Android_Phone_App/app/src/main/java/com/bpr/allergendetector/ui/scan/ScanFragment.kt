@@ -18,7 +18,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bpr.allergendetector.databinding.FragmentScanBinding
 import com.bpr.allergendetector.ui.CameraUtil
@@ -43,9 +42,6 @@ class ScanFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // unused for now
-        val scanViewModel =
-            ViewModelProvider(this).get(ScanViewModel::class.java)
 
         _binding = FragmentScanBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -57,7 +53,7 @@ class ScanFragment : Fragment() {
             requestPermissions()
         }
 
-        // Set up the listeners for take photo and video capture buttons
+        // Set up the listener for take photo buttons
         binding.imageCaptureButton.setOnClickListener { CameraUtil.takePhoto(requireContext(), this) }
         cameraExecutor = Executors.newSingleThreadExecutor()
 

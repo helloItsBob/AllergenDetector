@@ -17,10 +17,6 @@ class ImageConverter {
             return stream.toByteArray()
         }
 
-        fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
-            return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-        }
-
         fun convertByteArrayToBase64(byteArray: ByteArray): String {
             return  Base64.encodeToString(byteArray, Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING)
         }

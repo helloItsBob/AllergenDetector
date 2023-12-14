@@ -7,7 +7,6 @@ import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import com.bpr.allergendetector.R
 
-
 class SettingsButtonAdapter(
     private val buttonList: List<String>
 ) : RecyclerView.Adapter<SettingsButtonAdapter.CustomViewHolder>() {

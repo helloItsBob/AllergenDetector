@@ -16,7 +16,6 @@ import androidx.navigation.fragment.navArgs
 import com.bpr.allergendetector.MainActivity
 import com.bpr.allergendetector.databinding.FragmentEditTextBinding
 
-
 class EditTextFragment : Fragment() {
     private var _binding: FragmentEditTextBinding? = null
 
